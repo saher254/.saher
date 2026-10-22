@@ -18,17 +18,19 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
     body { background: var(--bg); color: var(--text); transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* الهيدر */
+    /* الهيدر (من غير أي زراير رجوع) */
     .main-header { display: flex; justify-content: center; align-items: center; padding: 15px 25px; background: var(--accent); color: var(--accent-text); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-    .main-header h1 { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .main-header h1 { font-size: 22px; font-weight: 800; }
 
-    .container { max-width: 1000px; margin: 25px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+    .container { max-width: 900px; margin: 25px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; flex-direction: column; gap: 20px; }
 
+    /* قلب الصفحة */
     .page-hero { text-align: center; margin: 10px auto 20px; }
     .page-hero h2 { font-size: 32px; font-weight: 900; color: var(--text); margin-bottom: 10px; }
     .page-hero p { font-size: 16px; color: var(--muted); }
 
-    .search-box { width: 100%; margin-bottom: 20px; position: relative; }
+    /* البحث */
+    .search-box { width: 100%; margin-bottom: 10px; position: relative; }
     .search-box input { width: 100%; padding: 15px 20px 15px 50px; border: 2px solid var(--border); border-radius: 16px; font-size: 16px; background: var(--card); color: var(--text); outline: none; transition: 0.3s; box-shadow: var(--shadow); }
     .search-box input:focus { border-color: #4f46e5; }
     .search-box::before { content: '🔍'; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 18px; }
@@ -50,24 +52,18 @@
     .btn-danger:hover { background: #dc2626; }
     .btn-small { padding: 6px 12px; font-size: 13px; border-radius: 8px; }
 
-    /* 🌟 شبكة الوحدات (جنب بعض في سطر واحد) */
-    .units-grid { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* عرض الكارت 180 بكسل عشان يبقوا صغيرين وجنب بعض */
-        gap: 15px; 
-        margin-bottom: 30px; 
-    }
-    .unit-card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 15px; cursor: pointer; transition: 0.3s; position: relative; text-align: center; }
-    .unit-card:hover { transform: translateY(-5px); border-color: #4f46e5; box-shadow: var(--shadow); }
-    .unit-card.active { border-color: #4f46e5; background: rgba(79, 70, 229, 0.1); }
-    .unit-card h3 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
-    .unit-card p { font-size: 13px; color: var(--muted); }
-    
-    .unit-card-admin { position: absolute; top: 5px; left: 5px; display: flex; gap: 5px; opacity: 0; transition: 0.2s; }
-    .unit-card:hover .unit-card-admin { opacity: 1; }
+    /* صفحة اختيار الوحدة */
+    #page-units { display: flex; flex-direction: column; gap: 15px; }
+    .unit-select-card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 20px; cursor: pointer; transition: 0.3s; display: flex; justify-content: space-between; align-items: center; }
+    .unit-select-card:hover { border-color: #4f46e5; transform: translateY(-3px); box-shadow: var(--shadow); }
+    .unit-select-card h3 { font-size: 20px; font-weight: 800; color: var(--text); }
+    .unit-select-card p { font-size: 14px; color: var(--muted); }
 
-    /* الدروس */
-    .lessons-container { display: flex; flex-direction: column; gap: 15px; }
+    /* صفحة الدروس */
+    #page-lessons { display: none; flex-direction: column; gap: 15px; }
+    .back-to-units-btn { background: var(--border); color: var(--text); margin-bottom: 10px; width: fit-content; }
+    .back-to-units-btn:hover { background: #4f46e5; color: #fff; }
+
     .lesson-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); }
     .lesson-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
     .lesson-title { font-size: 20px; font-weight: 800; color: #4f46e5; }
@@ -92,31 +88,20 @@
     .empty-msg { padding: 30px; text-align: center; color: var(--muted); background: var(--bg); border-radius: 12px; border: 1px dashed var(--border); }
 </style>
 </head>
-    <body>
-    <!-- الهيدر -->
+<body>
+    <!-- الهيدر (من غير زرار رجوع) -->
     <header class="main-header">
         <h1>📚 المنصة التعليمية</h1>
     </header>
 
     <main class="container">
         
-        <!-- قلب الصفحة -->
-        <div class="page-hero">
-            <h2>📖 مادة اللغة العربية</h2>
-            <p>تصفح الوحدات والدروس بكل سهولة</p>
-        </div>
-
-        <!-- شريط البحث -->
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="ابحث عن اسم الدرس هنا..." oninput="searchLessons()">
-        </div>
-
         <!-- لوحة تحكم المدير -->
         <section id="adminPanel" class="admin-panel hidden">
             <h2>🛠️ لوحة تحكم المدير</h2>
             
             <h3>① إضافة وحدة جديدة</h3>
-            <input id="unitName" placeholder="اسم الوحدة (مثال: الوحدة الأولى)">
+            <input id="unitName" placeholder="اسم الوحدة">
             <button id="addUnitBtn" class="btn-primary">➕ إضافة الوحدة</button>
 
             <h3>② إضافة درس لوحدة</h3>
@@ -133,12 +118,25 @@
             <button id="addItemBtn" class="btn-primary">💾 حفظ ونشر</button>
         </section>
 
-        <!-- شبكة الوحدات (جنب بعض) -->
-        <!-- 🌟 ضفت style هنا مباشرة عشان أغصب المتصفح يقراها -->
-        <div id="unitsGrid" class="units-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px;"></div>
+        <!-- الصفحة الأولى: اختيار الوحدة -->
+        <div id="page-units">
+            <div class="page-hero">
+                <h2>📖 مادة اللغة العربية</h2>
+                <p>اختر الوحدة الدراسية لعرض الدروس</p>
+            </div>
+            <!-- البحث -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="ابحث عن اسم الدرس هنا..." oninput="searchLessons()">
+            </div>
+            <div id="unitsContainer" style="display:flex; flex-direction:column; gap:15px;"></div>
+        </div>
 
-        <!-- الدروس -->
-        <div id="lessonsContainer" class="lessons-container"></div>
+        <!-- الصفحة الثانية: الدروس (تظهر لما تختار وحدة) -->
+        <div id="page-lessons">
+            <button class="back-to-units-btn" onclick="showUnitsPage()">🔙 رجوع للوحدات</button>
+            <h2 id="currentUnitTitle" style="font-size:26px; font-weight:900; margin-bottom:15px; color:#4f46e5;"></h2>
+            <div id="lessonsContainer"></div>
+        </div>
 
     </main>
 
@@ -180,8 +178,11 @@
                 items = sortOldestFirst(records.filter(x => x.kind === "item"));
 
                 fillSelectors();
-                renderUnits();
-                if (selectedUnitId) renderLessons(selectedUnitId);
+                renderUnitsPage();
+                
+                // لو كنا جوه وحدة معينة، نحدث الدروس
+                if (selectedUnitId) renderLessonsPage(selectedUnitId);
+
             } catch (e) {
                 console.error(e);
             }
@@ -206,32 +207,64 @@
         }
         document.getElementById('contentUnit').addEventListener('change', fillLessonSelector);
 
-        function renderUnits() {
-            const grid = document.getElementById('unitsGrid');
-            grid.innerHTML = '';
-            if (units.length === 0) { grid.innerHTML = '<div class="empty-msg" style="grid-column:1/-1;">لا توجد وحدات.</div>'; return; }
+        // 🌟 عرض صفحة الوحدات
+        function renderUnitsPage() {
+            const container = document.getElementById('unitsContainer');
+            container.innerHTML = '';
+            
+            if (units.length === 0) { 
+                container.innerHTML = '<div class="empty-msg">لا توجد وحدات.</div>'; 
+                return; 
+            }
 
             units.forEach(unit => {
                 const card = document.createElement('div');
-                card.className = `unit-card ${selectedUnitId === unit.id ? 'active' : ''}`;
-                card.onclick = () => { selectedUnitId = unit.id; renderUnits(); renderLessons(unit.id); };
+                card.className = 'unit-select-card';
+                card.onclick = () => openUnit(unit.id, unit.title); // فتح الوحدة
 
                 let adminBtns = '';
                 if (isAdmin) {
-                    adminBtns = `<div class="unit-card-admin">
+                    adminBtns = `<div class="actions">
                         <button class="btn-secondary btn-small" onclick="event.stopPropagation(); editRecord('${unit.id}', 'unit', '${unit.title}')">✏️</button>
                         <button class="btn-danger btn-small" onclick="event.stopPropagation(); deleteRecord('${unit.id}', 'الوحدة')">🗑️</button>
                     </div>`;
                 }
 
-                card.innerHTML = `${adminBtns}
-                    <h3>📘 ${unit.title}</h3>
-                    <p>${lessons.filter(l => l.parentId === unit.id).length} دروس</p>`;
-                grid.appendChild(card);
+                card.innerHTML = `
+                    <div>
+                        <h3>📘 ${unit.title}</h3>
+                        <p>${lessons.filter(l => l.parentId === unit.id).length} دروس</p>
+                    </div>
+                    ${adminBtns}
+                `;
+                container.appendChild(card);
             });
         }
 
-        function renderLessons(unitId) {
+        // 🌟 فتح وحدة معينة ونقل الشاشة للدروس
+        window.openUnit = function(unitId, unitTitle) {
+            selectedUnitId = unitId;
+            document.getElementById('currentUnitTitle').textContent = "📖 " + unitTitle;
+            
+            // إخفاء صفحة الوحدات، وإظهار صفحة الدروس
+            document.getElementById('page-units').style.display = 'none';
+            document.getElementById('page-lessons').style.display = 'flex';
+
+            renderLessonsPage(unitId);
+            window.scrollTo(0, 0);
+        };
+
+        // 🌟 الرجوع لصفحة الوحدات
+        window.showUnitsPage = function() {
+            selectedUnitId = null;
+            document.getElementById('page-lessons').style.display = 'none';
+            document.getElementById('page-units').style.display = 'flex';
+            document.getElementById('searchInput').value = ''; // مسح البحث
+            window.scrollTo(0, 0);
+        };
+
+        // 🌟 عرض دروس الوحدة المفتوحة
+        function renderLessonsPage(unitId) {
             const container = document.getElementById('lessonsContainer');
             container.innerHTML = '';
             const unitLessons = lessons.filter(l => l.parentId === unitId);
@@ -246,7 +279,7 @@
                 box.className = 'lesson-box';
                 
                 let adminBtns = isAdmin ? `<div class="actions">
-                    <button class="btn-secondary btn-small" onclick="editRecord('${lesson.id}', 'lesson', '${lesson.title}')">✏️ تعديل الدرس</button>
+                    <button class="btn-secondary btn-small" onclick="editRecord('${lesson.id}', 'lesson', '${lesson.title}')">✏️ تعديل</button>
                     <button class="btn-danger btn-small" onclick="deleteRecord('${lesson.id}', 'الدرس')">🗑️ حذف</button>
                 </div>` : '';
 
@@ -279,16 +312,24 @@
             });
         }
 
+        // البحث
         window.searchLessons = function() {
             const term = document.getElementById('searchInput').value.trim().toLowerCase();
             if (!term) {
-                if (selectedUnitId) renderLessons(selectedUnitId);
-                else document.getElementById('lessonsContainer').innerHTML = '';
+                // لو مفيش بحث، نرجع للوضع الطبيعي
+                if (selectedUnitId) renderLessonsPage(selectedUnitId);
                 return;
             }
             
             const results = lessons.filter(l => l.title.toLowerCase().includes(term));
             const container = document.getElementById('lessonsContainer');
+            
+            // لو إحنا في صفحة الوحدات، ننقلهم لصفحة الدروس ونعرض النتائج
+            document.getElementById('page-units').style.display = 'none';
+            document.getElementById('page-lessons').style.display = 'flex';
+            document.getElementById('currentUnitTitle').textContent = "نتائج البحث";
+            document.querySelector('.back-to-units-btn').style.display = 'inline-flex';
+
             container.innerHTML = '';
             
             if (results.length === 0) {
@@ -401,4 +442,4 @@
         loadData();
     </script>
 </body>
-</html>
+            </html>
