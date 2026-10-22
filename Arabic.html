@@ -50,11 +50,11 @@
 
     /* الوحدات والدروس */
     .unit-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px; overflow: hidden; box-shadow: var(--shadow); }
-    .unit-head { background: var(--accent); color: #fff; padding: 15px 20px; font-size: 18px; font-weight: 800; }
+    .unit-head { background: var(--accent); color: #fff; padding: 15px 20px; font-size: 18px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
     
     .lesson-box { padding: 20px; border-bottom: 1px solid var(--border); }
     .lesson-box:last-child { border-bottom: none; }
-    .lesson-title { font-size: 17px; font-weight: 800; color: #4f46e5; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+    .lesson-title { font-size: 17px; font-weight: 800; color: #4f46e5; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
 
     .content-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
     .content-title { font-weight: 800; font-size: 16px; margin-bottom: 10px; color: var(--text); }
@@ -77,7 +77,7 @@
     .empty-msg { padding: 30px; text-align: center; color: var(--muted); background: var(--bg); border-radius: 12px; border: 1px dashed var(--border); }
 </style>
 </head>
-<body>
+    <body>
     <!-- الهيدر -->
     <header class="main-header">
         <h1>📚 مادة اللغة العربية</h1>
@@ -118,7 +118,7 @@
             </div>
         </section>
     </main>
-        <script type="module">
+            <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
@@ -293,13 +293,13 @@
                 const unitEl = document.createElement('div');
                 unitEl.className = 'unit-box';
 
-                let html = `<div class="unit-head">📘 ${unit.title}</div>`;
-
-                if (isAdmin) {
-                    html += `<div style="padding:10px; background:rgba(239,68,68,0.05); text-align:left;">
-                        <button class="btn-danger btn-small" onclick="deleteRecord('${unit.id}', 'الوحدة')">🗑️ حذف الوحدة</button>
-                    </div>`;
-                }
+                let html = `<div class="unit-head">
+                    <span>📘 ${unit.title}</span>
+                    ${isAdmin ? `<div>
+                        <button class="btn-secondary btn-small" onclick="editRecord('${unit.id}', 'unit', '${unit.title}')">✏️ تعديل</button>
+                        <button class="btn-danger btn-small" onclick="deleteRecord('${unit.id}', 'الوحدة')">🗑️ حذف</button>
+                    </div>` : ''}
+                </div>`;
 
                 const unitLessons = lessons.filter(l => l.parentId === unit.id);
 
@@ -309,13 +309,13 @@
 
                 unitLessons.forEach(lesson => {
                     html += `<div class="lesson-box">
-                        <div class="lesson-title">📝 ${lesson.title}</div>`;
-                    
-                    if (isAdmin) {
-                        html += `<div style="margin-bottom:15px;">
-                            <button class="btn-danger btn-small" onclick="deleteRecord('${lesson.id}', 'الدرس')">حذف الدرس</button>
+                        <div class="lesson-title">
+                            <span>📝 ${lesson.title}</span>
+                            ${isAdmin ? `<div>
+                                <button class="btn-secondary btn-small" onclick="editRecord('${lesson.id}', 'lesson', '${lesson.title}')">✏️ تعديل</button>
+                                <button class="btn-danger btn-small" onclick="deleteRecord('${lesson.id}', 'الدرس')">🗑️ حذف</button>
+                            </div>` : ''}
                         </div>`;
-                    }
 
                     const lessonItems = items.filter(i => i.parentId === lesson.id);
                     
@@ -329,7 +329,8 @@
                             ${item.text ? `<div class="content-text">${item.text}</div>` : ''}
                             ${getMediaHtml(item.url, item.title)}
                             ${isAdmin ? `<div class="actions">
-                                <button class="btn-danger btn-small" onclick="deleteRecord('${item.id}', 'المحتوى')">حذف المحتوى</button>
+                                <button class="btn-secondary btn-small" onclick="editRecord('${item.id}', 'item', '${item.title}', '${item.text || ''}', '${item.url || ''}')">✏️ تعديل</button>
+                                <button class="btn-danger btn-small" onclick="deleteRecord('${item.id}', 'المحتوى')">🗑️ حذف</button>
                             </div>` : ''}
                         </div>`;
                     });
@@ -342,6 +343,7 @@
             });
         }
 
+        // دالة الحذف
         window.deleteRecord = async function(id, name) {
             if (!isAdmin) return;
             if (!confirm(`هل أنت متأكد من حذف هذا ${name}؟`)) return;
@@ -354,8 +356,38 @@
             }
         };
 
+        // دالة التعديل
+        window.editRecord = async function(id, type, oldTitle, oldText = '', oldUrl = '') {
+            if (!isAdmin) return;
+            try {
+                if (type === 'unit' || type === 'lesson') {
+                    const newTitle = prompt("اكتب الاسم الجديد:", oldTitle);
+                    if (newTitle === null || newTitle.trim() === '') return;
+                    await updateDoc(doc(db, "content", id), { title: newTitle.trim() });
+                } else if (type === 'item') {
+                    const newTitle = prompt("العنوان:", oldTitle);
+                    if (newTitle === null) return;
+                    const newText = prompt("النص (اتركه فارغاً إذا لا يوجد):", oldText);
+                    if (newText === null) return;
+                    const newUrl = prompt("الرابط (اتركه فارغاً إذا لا يوجد):", oldUrl);
+                    if (newUrl === null) return;
+                    
+                    await updateDoc(doc(db, "content", id), { 
+                        title: newTitle.trim(), 
+                        text: newText.trim(), 
+                        url: newUrl.trim() 
+                    });
+                }
+                await loadData();
+                setStatus("تم التعديل بنجاح.");
+            } catch (e) {
+                alert("خطأ في التعديل: " + e.message);
+            }
+        };
+
         // تشغيل عند التحميل
         loadData();
     </script>
 </body>
 </html>
+
