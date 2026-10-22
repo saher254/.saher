@@ -293,7 +293,6 @@
 
         window.checkAdminCode = function() {
             const val = document.getElementById('adminCodeInput').value.trim();
-            // أمان إضافي: التأكد من الكود ومش فاضي
             if (val && val === SECRET_CODE) {
                 isAdmin = true;
                 localStorage.setItem('bakaloria_admin', 'true');
@@ -356,7 +355,6 @@
                 const snapshot = await getDocs(q);
                 currentItems = [];
                 snapshot.forEach(doc => { currentItems.push({ id: doc.id, ...doc.data() }); });
-                // الترتيب من الأقدم للأحدث عشان الجديد يبقى تحت
                 currentItems.sort((a, b) => a.createdAt - b.createdAt);
                 renderSubjectContent();
             } catch (e) {
@@ -367,29 +365,62 @@
             }
         };
 
-        // دالة عرض الميديا (بتظهر الصورة مش رابط)
+        // 🌟 دالة عرض الميديا (بتظهر الصورة والـ PDF جوه الصفحة مع زرار تكبير)
         function getMediaHtml(url, title) {
             if (!url) return '';
-            const u = url.toLowerCase();
+            let u = url.toLowerCase();
             
-            // لو الصورة
-            if (u.match(/\.(jpeg|jpg|gif|png|webp|svg)$/) != null || u.includes('picsum.photos')) {
-                return `<div class="media-container"><img src="${url}" alt="${title}"></div>`;
+            // 1. الصور (حتى لو الرابط مش منتهي بـ jpg)
+            // لو الرابط مش فيه كلمة pdf أو youtube أو mp4 أو mp3، بنعتبره صورة
+            if (!u.includes('.pdf') && !u.includes('drive.google.com') && !u.includes('youtube.com') && !u.includes('youtu.be') && !u.match(/\.(mp4|webm|ogg|mov|mp3|wav|ogg|m4a)$/)) {
+                return `
+                    <div style="position: relative; margin-top: 15px;">
+                        <div class="media-container" style="background: transparent; border: none;">
+                            <img src="${url}" alt="${title}" style="max-width: 100%; border-radius: 12px;">
+                        </div>
+                        <a href="${url}" target="_blank" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; text-decoration: none; font-size: 20px;" title="تكبير الصورة">⤢</a>
+                    </div>
+                `;
             }
-            // لو فيديو
+            
+            // 2. الفيديو
             if (u.match(/\.(mp4|webm|ogg|mov)$/) != null) {
                 return `<div class="media-container"><video controls src="${url}"></video></div>`;
             }
-            // لو صوت
+            
+            // 3. الصوت
             if (u.match(/\.(mp3|wav|ogg|m4a)$/) != null) {
                 return `<div class="media-container" style="background:transparent; border:none;"><audio controls src="${url}"></audio></div>`;
             }
-            // يوتيوب
+            
+            // 4. يوتيوب
             if (u.includes('youtube.com') || u.includes('youtu.be')) {
                 let vidId = u.includes('youtu.be') ? u.split('/').pop().split('?')[0] : new URLSearchParams(new URL(url).search).get('v');
                 if (vidId) return `<div class="media-container"><iframe src="https://www.youtube.com/embed/${vidId}" allowfullscreen></iframe></div>`;
             }
-            // PDF أو أي رابط تاني كزرار
+            
+            // 5. ملفات الـ PDF
+            if (u.includes('.pdf') || u.includes('drive.google.com')) {
+                let finalUrl = url;
+                if (u.includes('drive.google.com')) {
+                    let fileId = "";
+                    if (u.includes('/file/d/')) fileId = url.split('/file/d/')[1].split('/')[0];
+                    else if (u.includes('id=')) fileId = url.split('id=')[1].split('&')[0];
+                    
+                    if (fileId) finalUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                }
+
+                return `
+                    <div style="position: relative; margin-top: 15px;">
+                        <div class="media-container" style="height: 500px; overflow: hidden; background: #fff;">
+                            <iframe src="${finalUrl}" style="width: 100%; height: 100%; border: none;"></iframe>
+                        </div>
+                        <a href="${url}" target="_blank" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; text-decoration: none; font-size: 20px;" title="تكبير الملف">⤢</a>
+                    </div>
+                `;
+            }
+            
+            // 6. أي رابط تاني
             return `<a href="${url}" target="_blank" style="display:inline-block;margin-top:15px;background:#4f46e5;color:#fff;padding:10px 20px;border-radius:10px;text-decoration:none;font-weight:800;">🔗 فتح الرابط</a>`;
         }
 
