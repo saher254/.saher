@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مادة العربي | منصة البكالوريا التعليمية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg: #ffffff; --text: #0f172a; --card: #ffffff; --accent: #4f46e5;
+        --accent-text: #ffffff; --border: #e2e8f0; --danger: #ef4444; --success: #10b981; --muted: #64748b;
+        --shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+    }
+    body.dark {
+        --bg: #0b1120; --text: #f8fafc; --card: #1e293b; --border: #334155; --muted: #94a3b8; 
+        --shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+    body { background: var(--bg); color: var(--text); transition: 0.3s; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* الهيدر */
+    .main-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: var(--accent); color: var(--accent-text); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .main-header h1 { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    
+    /* ألوان الزرار */
+    .back-btn-small { background: var(--border); border: none; color: var(--text); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 700; transition: 0.2s; }
+    .back-btn-small:hover { background: #4f46e5; color: #fff; }
+
+    .container { max-width: 900px; margin: 25px auto; padding: 0 20px; width: 100%; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); }
+    .card h2 { font-size: 20px; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .card p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+    /* لوحة التحكم */
+    .admin-panel { border: 2px solid #4f46e5; background: rgba(79, 70, 229, 0.05); }
+    .admin-panel h3 { font-size: 18px; color: #4f46e5; margin: 15px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+    
+    input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 10px; font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); outline: none; transition: 0.2s; }
+    input:focus, textarea:focus, select:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    
+    button { font-family: 'Cairo', sans-serif; cursor: pointer; border: none; border-radius: 10px; padding: 12px 20px; font-weight: 700; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-primary { background: #4f46e5; color: #fff; }
+    .btn-primary:hover { background: #4338ca; transform: translateY(-2px); }
+    .btn-secondary { background: var(--border); color: var(--text); }
+    .btn-secondary:hover { background: #cbd5e1; }
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-small { padding: 6px 12px; font-size: 13px; }
+
+    /* الوحدات والدروس */
+    .unit-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px; overflow: hidden; box-shadow: var(--shadow); }
+    .unit-head { background: var(--accent); color: #fff; padding: 15px 20px; font-size: 18px; font-weight: 800; }
+    
+    .lesson-box { padding: 20px; border-bottom: 1px solid var(--border); }
+    .lesson-box:last-child { border-bottom: none; }
+    .lesson-title { font-size: 17px; font-weight: 800; color: #4f46e5; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
+    .content-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+    .content-title { font-weight: 800; font-size: 16px; margin-bottom: 10px; color: var(--text); }
+    .content-text { line-height: 1.8; font-size: 15px; white-space: pre-wrap; color: var(--muted); }
+
+    /* الميديا */
+    .media-container { margin-top: 15px; border-radius: 12px; overflow: hidden; background: #000; width: 100%; display: flex; justify-content: center; position: relative; }
+    .media-container img { max-width: 100%; max-height: 450px; object-fit: contain; display: block; border-radius: 12px; background: transparent; }
+    .media-container video { max-width: 100%; max-height: 450px; display: block; }
+    .media-container audio { width: 100%; display: block; }
+    .media-container iframe { width: 100%; height: 400px; border: none; display: block; }
+
+    .zoom-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; text-decoration: none; font-size: 20px; z-index: 10; }
+    .zoom-btn:hover { background: #4f46e5; }
+
+    .actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+    .hidden { display: none !important; }
+    
+    .status-msg { padding: 12px; border-radius: 10px; background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; margin-bottom: 15px; }
+    .empty-msg { padding: 30px; text-align: center; color: var(--muted); background: var(--bg); border-radius: 12px; border: 1px dashed var(--border); }
+</style>
+</head>
+<body>
+    <!-- الهيدر -->
+    <header class="main-header">
+        <h1>📚 مادة اللغة العربية</h1>
+        <button class="back-btn-small" onclick="window.location.href='index.html'">🔙 رجوع للمنصة</button>
+    </header>
+
+    <main class="container">
+        <!-- شريط الحالة -->
+        <div id="status" class="status-msg">جارٍ تحميل المنهج...</div>
+
+        <!-- لوحة تحكم المدير (مخفية افتراضياً) -->
+        <section id="adminPanel" class="card admin-panel hidden">
+            <h2>🛠️ لوحة إدارة مادة العربي</h2>
+            <p>مرحباً بك يا ساهر. من هنا يمكنك إضافة الوحدات والدروس والمحتوى.</p>
+
+            <h3>① إضافة وحدة جديدة</h3>
+            <input id="unitName" placeholder="مثال: الوحدة الأولى">
+            <button id="addUnitBtn" class="btn-primary">➕ إضافة الوحدة</button>
+
+            <h3>② إضافة درس لوحدة</h3>
+            <select id="lessonUnit"><option value="">اختر الوحدة...</option></select>
+            <input id="lessonName" placeholder="اسم الدرس">
+            <button id="addLessonBtn" class="btn-primary">➕ إضافة الدرس</button>
+
+            <h3>③ إضافة محتوى داخل درس</h3>
+            <select id="contentUnit"><option value="">اختر الوحدة...</option></select>
+            <select id="contentLesson"><option value="">اختر الدرس...</option></select>
+            <input id="itemTitle" placeholder="عنوان المحتوى أو السؤال">
+            <textarea id="itemText" rows="4" placeholder="اكتب النص هنا (اختياري)..."></textarea>
+            <input id="itemUrl" type="url" placeholder="رابط صورة، فيديو، أو PDF (اختياري)...">
+            <button id="addItemBtn" class="btn-primary">💾 حفظ ونشر</button>
+        </section>
+
+        <!-- عرض المنهج -->
+        <section class="card" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+            <div id="curriculum">
+                <div class="empty-msg">جارٍ تحميل الوحدات...</div>
+            </div>
+        </section>
+    </main>
+        <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDe5INvR_ifEARHmw7M0qqBQ34-G6z4p7w",
+            authDomain: "mansa-educational.firebaseapp.com",
+            projectId: "mansa-educational",
+            storageBucket: "mansa-educational.firebasestorage.app",
+            messagingSenderId: "144298769750",
+            appId: "1:144298769750:web:43eb0c63e5d2acb37baaf7"
+        };
+
+        const app = initializeApp(firebaseConfig, "arabicApp");
+        const db = getFirestore(app);
+        const contentRef = collection(db, "content");
+
+        // ربط وضع الليل والنهار بالمنصة الأساسية
+        if (localStorage.getItem('bakaloria_theme') === 'dark') {
+            document.body.classList.add('dark');
+        }
+
+        // فحص حالة المدير من المنصة الأساسية
+        let isAdmin = localStorage.getItem('bakaloria_admin') === 'true';
+        if (isAdmin) {
+            document.getElementById('adminPanel').classList.remove('hidden');
+        }
+
+        let units = [];
+        let lessons = [];
+        let items = [];
+
+        function setStatus(msg) { document.getElementById('status').textContent = msg; }
+
+        function sortOldestFirst(list) {
+            return list.sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+        }
+
+        async function loadData() {
+            try {
+                const q = query(contentRef, where("subject", "==", "arabic"));
+                const snapshot = await getDocs(q);
+                const records = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                units = sortOldestFirst(records.filter(x => x.kind === "unit"));
+                lessons = sortOldestFirst(records.filter(x => x.kind === "lesson"));
+                items = sortOldestFirst(records.filter(x => x.kind === "item"));
+
+                fillSelectors();
+                renderCurriculum();
+                setStatus("تم تحميل المنهج بنجاح ✅");
+            } catch (e) {
+                console.error(e);
+                setStatus("حدث خطأ في تحميل البيانات ❌");
+            }
+        }
+
+        function fillSelectors() {
+            ['lessonUnit', 'contentUnit'].forEach(id => {
+                const select = document.getElementById(id);
+                const oldVal = select.value;
+                select.innerHTML = '<option value="">اختر الوحدة...</option>';
+                units.forEach(u => {
+                    select.innerHTML += `<option value="${u.id}">${u.title}</option>`;
+                });
+                if (units.some(u => u.id === oldVal)) select.value = oldVal;
+            });
+            fillLessonSelector();
+        }
+
+        function fillLessonSelector() {
+            const unitId = document.getElementById('contentUnit').value;
+            const select = document.getElementById('contentLesson');
+            select.innerHTML = '<option value="">اختر الدرس...</option>';
+            lessons.filter(l => l.parentId === unitId).forEach(l => {
+                select.innerHTML += `<option value="${l.id}">${l.title}</option>`;
+            });
+        }
+
+        document.getElementById('contentUnit').addEventListener('change', fillLessonSelector);
+
+        async function addRecord(data) {
+            if (!isAdmin) return alert("يجب تسجيل الدخول كمدير من الصفحة الرئيسية أولاً.");
+            try {
+                await addDoc(contentRef, { ...data, subject: "arabic", createdAt: Date.now() });
+                await loadData();
+                return true;
+            } catch (e) {
+                alert("خطأ في الحفظ: " + e.message);
+                return false;
+            }
+        }
+
+        // إضافة وحدة
+        document.getElementById('addUnitBtn').addEventListener('click', async () => {
+            const title = document.getElementById('unitName').value.trim();
+            if (!title) return alert("اكتب اسم الوحدة");
+            if (await addRecord({ kind: "unit", title })) {
+                document.getElementById('unitName').value = "";
+                setStatus("تمت إضافة الوحدة.");
+            }
+        });
+
+        // إضافة درس
+        document.getElementById('addLessonBtn').addEventListener('click', async () => {
+            const parentId = document.getElementById('lessonUnit').value;
+            const title = document.getElementById('lessonName').value.trim();
+            if (!parentId || !title) return alert("اختر الوحدة واكتب اسم الدرس");
+            if (await addRecord({ kind: "lesson", parentId, title })) {
+                document.getElementById('lessonName').value = "";
+                document.getElementById('contentUnit').value = parentId;
+                fillLessonSelector();
+                setStatus("تمت إضافة الدرس.");
+            }
+        });
+
+        // إضافة محتوى
+        document.getElementById('addItemBtn').addEventListener('click', async () => {
+            const parentId = document.getElementById('contentLesson').value;
+            const title = document.getElementById('itemTitle').value.trim();
+            const text = document.getElementById('itemText').value.trim();
+            const url = document.getElementById('itemUrl').value.trim();
+
+            if (!parentId) return alert("اختر الدرس");
+            if (!title) return alert("اكتب عنوان المحتوى");
+            if (!text && !url) return alert("اكتب نصاً أو رابطاً");
+
+            if (await addRecord({ kind: "item", parentId, title, text, url })) {
+                document.getElementById('itemTitle').value = "";
+                document.getElementById('itemText').value = "";
+                document.getElementById('itemUrl').value = "";
+                setStatus("تم حفظ المحتوى ونشره.");
+            }
+        });
+
+        // دالة عرض الميديا
+        function getMediaHtml(url, title) {
+            if (!url) return '';
+            let u = url.toLowerCase();
+            
+            if (u.includes('youtube.com') || u.includes('youtu.be')) {
+                let vidId = u.includes('youtu.be') ? u.split('/').pop().split('?')[0] : new URLSearchParams(new URL(url).search).get('v');
+                if (vidId) return `<div class="media-container"><iframe src="https://www.youtube.com/embed/${vidId}" allowfullscreen></iframe></div>`;
+            }
+            if (u.includes('.pdf') || u.includes('drive.google.com')) {
+                let finalUrl = url;
+                if (u.includes('drive.google.com')) {
+                    let fileId = u.includes('/file/d/') ? url.split('/file/d/')[1].split('/')[0] : url.split('id=')[1]?.split('&')[0];
+                    if (fileId) finalUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                }
+                return `<div class="media-container" style="height:400px; background:#fff;"><iframe src="${finalUrl}"></iframe><a href="${url}" target="_blank" class="zoom-btn">⤢</a></div>`;
+            }
+            if (u.match(/\.(mp4|webm|ogg|mov)$/)) {
+                return `<div class="media-container"><video controls src="${url}"></video></div>`;
+            }
+            if (u.match(/\.(mp3|wav|m4a|oga)$/)) {
+                return `<div class="media-container" style="background:transparent;"><audio controls src="${url}"></audio></div>`;
+            }
+            // لو مش معروف بنعتبره صورة
+            return `<div class="media-container" style="background:transparent;"><img src="${url}" alt="${title}"><a href="${url}" target="_blank" class="zoom-btn">⤢</a></div>`;
+        }
+
+        function renderCurriculum() {
+            const root = document.getElementById('curriculum');
+            root.innerHTML = '';
+
+            if (units.length === 0) {
+                root.innerHTML = '<div class="empty-msg">لا توجد وحدات مضافة بعد.</div>';
+                return;
+            }
+
+            units.forEach(unit => {
+                const unitEl = document.createElement('div');
+                unitEl.className = 'unit-box';
+
+                let html = `<div class="unit-head">📘 ${unit.title}</div>`;
+
+                if (isAdmin) {
+                    html += `<div style="padding:10px; background:rgba(239,68,68,0.05); text-align:left;">
+                        <button class="btn-danger btn-small" onclick="deleteRecord('${unit.id}', 'الوحدة')">🗑️ حذف الوحدة</button>
+                    </div>`;
+                }
+
+                const unitLessons = lessons.filter(l => l.parentId === unit.id);
+
+                if (unitLessons.length === 0) {
+                    html += `<div class="lesson-box"><p class="empty-msg" style="padding:10px;">لا توجد دروس في هذه الوحدة.</p></div>`;
+                }
+
+                unitLessons.forEach(lesson => {
+                    html += `<div class="lesson-box">
+                        <div class="lesson-title">📝 ${lesson.title}</div>`;
+                    
+                    if (isAdmin) {
+                        html += `<div style="margin-bottom:15px;">
+                            <button class="btn-danger btn-small" onclick="deleteRecord('${lesson.id}', 'الدرس')">حذف الدرس</button>
+                        </div>`;
+                    }
+
+                    const lessonItems = items.filter(i => i.parentId === lesson.id);
+                    
+                    if (lessonItems.length === 0) {
+                        html += `<p class="empty-msg">لا يوجد محتوى مضاف لهذا الدرس.</p>`;
+                    }
+
+                    lessonItems.forEach(item => {
+                        html += `<div class="content-item">
+                            <div class="content-title">🔹 ${item.title}</div>
+                            ${item.text ? `<div class="content-text">${item.text}</div>` : ''}
+                            ${getMediaHtml(item.url, item.title)}
+                            ${isAdmin ? `<div class="actions">
+                                <button class="btn-danger btn-small" onclick="deleteRecord('${item.id}', 'المحتوى')">حذف المحتوى</button>
+                            </div>` : ''}
+                        </div>`;
+                    });
+
+                    html += `</div>`; // نهاية lesson-box
+                });
+
+                unitEl.innerHTML = html;
+                root.appendChild(unitEl);
+            });
+        }
+
+        window.deleteRecord = async function(id, name) {
+            if (!isAdmin) return;
+            if (!confirm(`هل أنت متأكد من حذف هذا ${name}؟`)) return;
+            try {
+                await deleteDoc(doc(db, "content", id));
+                await loadData();
+                setStatus(`تم حذف ${name} بنجاح.`);
+            } catch (e) {
+                alert("خطأ في الحذف: " + e.message);
+            }
+        };
+
+        // تشغيل عند التحميل
+        loadData();
+    </script>
+</body>
+</html>
