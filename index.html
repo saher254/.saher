@@ -70,11 +70,15 @@
         .back-btn:hover { background: #4f46e5; color: #fff; border-color: #4f46e5; }
         .page-title { font-size: 26px; color: var(--text); font-weight: 800; }
 
+        /* صفحة اختبر نفسك */
         .content-area { max-width: 800px; margin: 25px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 20px; width: 100%; }
-        .content-item { background: var(--card); padding: 25px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: 0.3s; }
+        .content-item { background: var(--card); padding: 25px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: 0.3s; margin-bottom: 10px; }
         .content-item .item-title { font-weight: 800; color: var(--text); margin-bottom: 15px; font-size: 20px; }
         .content-item p { line-height: 1.8; font-size: 16px; white-space: pre-wrap; color: var(--muted); }
         
+        /* المسافات بين الرسايل */
+        .content-list { display: flex; flex-direction: column; gap: 20px; }
+
         .media-container { margin-top: 15px; border-radius: 16px; overflow: hidden; background: #000; width: 100%; display: flex; justify-content: center; border: 1px solid var(--border); }
         .media-container img, .media-container video { max-width: 100%; max-height: 500px; object-fit: contain; display: block; }
         .media-container audio { width: 100%; display: block; margin: 10px 0; }
@@ -84,7 +88,7 @@
         .btn-danger { background: var(--danger); color: #fff; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.2s; }
         .btn-edit { background: #f59e0b; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.2s; }
 
-        .add-content-btn { background: linear-gradient(135deg, #4f46e5, #818cf8); color: #fff; border: none; padding: 18px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4); transition: 0.3s; }
+        .add-content-btn { background: linear-gradient(135deg, #4f46e5, #818cf8); color: #fff; border: none; padding: 18px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4); transition: 0.3s; margin-top: 10px; }
         .add-content-btn:hover { transform: translateY(-3px); }
 
         .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(8px); }
@@ -107,8 +111,7 @@
         .footer-contact-btn:hover { border-color: #10b981; color: #10b981; transform: translateY(-2px); }
     </style>
 </head>
-<body>
-    <!-- الهيدر (بيظهر في الرئيسية بس) -->
+    <body>
     <header class="main-header" id="mainHeader">
         <h1 onclick="showPage('home')">🎓 منصة البكالوريا</h1>
         <button id="themeToggle" title="تغيير المظهر">
@@ -116,7 +119,6 @@
         </button>
     </header>
 
-    <!-- شريط الإدارة -->
     <div id="adminBar" style="display:none;">
         <div class="admin-stats">
             <span class="visitor-count">👁️ زوار المنصة: <span id="visitsCount">0</span></span>
@@ -132,7 +134,6 @@
         </div>
 
         <div class="sections-container">
-            <!-- المواد بملفاتها -->
             <div class="subject-card" onclick="openEmbedded('Arabic.html', '📖 مادة العربي')">
                 <h2>📖 مادة العربي</h2><span class="arrow">⬅️</span>
             </div>
@@ -149,13 +150,11 @@
                 <h2>🚀 منصة جافا سكريبت للتعلم مجاناً</h2><span class="arrow">⬅️</span>
             </div>
             
-            <!-- اختبر نفسك (نفس لون المستطيلات) -->
             <div class="subject-card" onclick="openSubject('quiz', '📝 اختبر نفسك')">
                 <h2>📝 اختبر نفسك</h2><span class="arrow">⬅️</span>
             </div>
         </div>
 
-        <!-- الفوتر (بيظهر في الرئيسية بس) -->
         <footer class="main-footer">
             <a href="tel:01024897145" class="footer-contact-btn">
                 <span>📞</span> ساهر للتواصل: 01024897145
@@ -179,13 +178,14 @@
         </div>
         
         <div class="content-area">
-            <!-- زرار الإضافة (للمدير فقط) -->
+            <!-- المحتوى هنا -->
+            <div id="loadingContent" class="loading">⏳ جارٍ التحميل...</div>
+            <div id="subjectContentList" class="content-list"></div>
+            
+            <!-- زرار الإضافة تحت خالص -->
             <button id="addContentBtn" class="add-content-btn" style="display:none;" onclick="openAddModal()">
                 ➕ إضافة سؤال / محتوى جديد
             </button>
-            
-            <div id="loadingContent" class="loading">⏳ جارٍ التحميل...</div>
-            <div id="subjectContentList" class="content-list"></div>
         </div>
     </div>
 
@@ -232,7 +232,7 @@
             </div>
         </div>
     </div>
-        <script type="module">
+            <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
@@ -293,7 +293,8 @@
 
         window.checkAdminCode = function() {
             const val = document.getElementById('adminCodeInput').value.trim();
-            if (val === SECRET_CODE) {
+            // أمان إضافي: التأكد من الكود ومش فاضي
+            if (val && val === SECRET_CODE) {
                 isAdmin = true;
                 localStorage.setItem('bakaloria_admin', 'true');
                 closeModal('adminLoginModal');
@@ -316,7 +317,6 @@
             if (currentSubject) renderSubjectContent();
         }
 
-        // دالة التنقل بين الصفحات (بتخفي الهيدر لو مش الرئيسية)
         window.showPage = function(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
@@ -330,7 +330,6 @@
             window.scrollTo(0, 0);
         };
 
-        // فتح الملفات (البرمجة، الجافا، العربي، إلخ)
         window.openEmbedded = function(fileName, title) {
             clickSound.play().catch(e => console.log("الصوت اتمنع"));
             const frame = document.getElementById('embeddedFrame');
@@ -338,7 +337,6 @@
             showPage('embedded');
         };
 
-        // فتح صفحة (اختبر نفسك)
         window.openSubject = function(subjectId, title) {
             clickSound.play().catch(e => console.log("الصوت اتمنع"));
             currentSubject = subjectId;
@@ -358,7 +356,8 @@
                 const snapshot = await getDocs(q);
                 currentItems = [];
                 snapshot.forEach(doc => { currentItems.push({ id: doc.id, ...doc.data() }); });
-                currentItems.sort((a, b) => b.createdAt - a.createdAt);
+                // الترتيب من الأقدم للأحدث عشان الجديد يبقى تحت
+                currentItems.sort((a, b) => a.createdAt - b.createdAt);
                 renderSubjectContent();
             } catch (e) {
                 console.error(e);
@@ -368,23 +367,36 @@
             }
         };
 
+        // دالة عرض الميديا (بتظهر الصورة مش رابط)
         function getMediaHtml(url, title) {
             if (!url) return '';
             const u = url.toLowerCase();
+            
+            // لو الصورة
+            if (u.match(/\.(jpeg|jpg|gif|png|webp|svg)$/) != null || u.includes('picsum.photos')) {
+                return `<div class="media-container"><img src="${url}" alt="${title}"></div>`;
+            }
+            // لو فيديو
+            if (u.match(/\.(mp4|webm|ogg|mov)$/) != null) {
+                return `<div class="media-container"><video controls src="${url}"></video></div>`;
+            }
+            // لو صوت
+            if (u.match(/\.(mp3|wav|ogg|m4a)$/) != null) {
+                return `<div class="media-container" style="background:transparent; border:none;"><audio controls src="${url}"></audio></div>`;
+            }
+            // يوتيوب
             if (u.includes('youtube.com') || u.includes('youtu.be')) {
                 let vidId = u.includes('youtu.be') ? u.split('/').pop().split('?')[0] : new URLSearchParams(new URL(url).search).get('v');
                 if (vidId) return `<div class="media-container"><iframe src="https://www.youtube.com/embed/${vidId}" allowfullscreen></iframe></div>`;
             }
-            if (u.includes('.pdf') || u.includes('drive.google.com')) return `<div class="media-container"><iframe src="${url}"></iframe></div><a href="${url}" target="_blank" style="display:inline-block;margin-top:15px;color:#4f46e5;font-weight:800;text-decoration:none;">📄 فتح PDF</a>`;
-            if (u.match(/\.(jpeg|jpg|gif|png|webp|svg)$/)) return `<div class="media-container"><img src="${url}" alt="${title}"></div>`;
-            if (u.match(/\.(mp3|wav|ogg|m4a)$/)) return `<div class="media-container" style="background:transparent; border:none;"><audio controls src="${url}"></audio></div>`;
-            if (u.match(/\.(mp4|webm|ogg|mov)$/)) return `<div class="media-container"><video controls src="${url}"></video></div>`;
+            // PDF أو أي رابط تاني كزرار
             return `<a href="${url}" target="_blank" style="display:inline-block;margin-top:15px;background:#4f46e5;color:#fff;padding:10px 20px;border-radius:10px;text-decoration:none;font-weight:800;">🔗 فتح الرابط</a>`;
         }
 
         function renderSubjectContent() {
             const list = document.getElementById('subjectContentList');
             if (currentItems.length === 0) { list.innerHTML = '<p class="empty-msg">لا يوجد محتوى بعد.</p>'; return; }
+            
             list.innerHTML = currentItems.map(item => {
                 const adminBtns = isAdmin ? `<div class="admin-actions"><button class="btn-edit" onclick="openEditModal('${item.id}')">✏️ تعديل</button><button class="btn-danger" onclick="deleteContent('${item.id}')">🗑️ حذف</button></div>` : '';
                 return `<div class="content-item"><div class="item-title">${item.title}</div>${item.text ? `<p>${item.text}</p>` : ''}${getMediaHtml(item.url, item.title)}${adminBtns}</div>`;
@@ -448,4 +460,4 @@
     </script>
 </body>
 </html>
- 
+        
