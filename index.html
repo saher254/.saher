@@ -34,13 +34,18 @@
         body.dark #themeToggle .icon { right: 28px; background: #f59e0b; color: #fff; }
         #themeToggle:hover { transform: scale(1.05); }
 
+        /* شريط الطالب (الاسم وتسجيل الخروج) */
+        #userBar { background: #1e293b; color: #fff; padding: 10px 20px; display: none; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; border-bottom: 2px solid #4f46e5; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-name { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
+        .admin-badge { background: #10b981; color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .logout-btn { background: #ef4444; color: #fff; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .logout-btn:hover { background: #dc2626; }
+
+        /* شريط الزوار (للمدير) */
         #adminBar { background: #0f172a; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; transition: 0.3s; }
         .admin-stats { display: flex; gap: 15px; align-items: center; }
         .visitor-count { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; color: #10b981; }
-        .admin-bar-btn { background: #10b981; color: #fff; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
-        .admin-bar-btn:hover { background: #059669; }
-        .admin-bar-btn.logout { background: var(--danger); }
-        .admin-bar-btn.logout:hover { background: #dc2626; }
 
         .page { display: none; flex: 1; flex-direction: column; }
         .page.active { display: flex; animation: fadeIn 0.4s ease-out; }
@@ -70,13 +75,11 @@
         .back-btn:hover { background: #4f46e5; color: #fff; border-color: #4f46e5; }
         .page-title { font-size: 26px; color: var(--text); font-weight: 800; }
 
-        /* صفحة اختبر نفسك */
         .content-area { max-width: 800px; margin: 25px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 20px; width: 100%; }
         .content-item { background: var(--card); padding: 25px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: 0.3s; margin-bottom: 10px; }
         .content-item .item-title { font-weight: 800; color: var(--text); margin-bottom: 15px; font-size: 20px; }
         .content-item p { line-height: 1.8; font-size: 16px; white-space: pre-wrap; color: var(--muted); }
         
-        /* المسافات بين الرسايل */
         .content-list { display: flex; flex-direction: column; gap: 20px; }
 
         .media-container { margin-top: 15px; border-radius: 16px; overflow: hidden; background: #000; width: 100%; display: flex; justify-content: center; border: 1px solid var(--border); }
@@ -112,6 +115,7 @@
     </style>
 </head>
     <body>
+    <!-- الهيدر -->
     <header class="main-header" id="mainHeader">
         <h1 onclick="showPage('home')">🎓 منصة البكالوريا</h1>
         <button id="themeToggle" title="تغيير المظهر">
@@ -119,11 +123,22 @@
         </button>
     </header>
 
+    <!-- 🌟 شريط الطالب (بيظهر بس لما يسجل دخول) -->
+    <div id="userBar">
+        <div class="user-info">
+            <span id="welcomeText">👋 أهلاً بك</span>
+            <span id="adminBadge" class="admin-badge" style="display:none;">مدير</span>
+        </div>
+        <button class="logout-btn" onclick="confirmLogout()">
+            🚪 تسجيل الخروج
+        </button>
+    </div>
+
+    <!-- شريط الزوار (للمدير) -->
     <div id="adminBar" style="display:none;">
         <div class="admin-stats">
             <span class="visitor-count">👁️ زوار المنصة: <span id="visitsCount">0</span></span>
         </div>
-        <button class="admin-bar-btn logout" onclick="logoutAdmin()">خروج</button>
     </div>
 
     <!-- ==================== 1. الصفحة الرئيسية ==================== -->
@@ -178,11 +193,9 @@
         </div>
         
         <div class="content-area">
-            <!-- المحتوى هنا -->
             <div id="loadingContent" class="loading">⏳ جارٍ التحميل...</div>
             <div id="subjectContentList" class="content-list"></div>
             
-            <!-- زرار الإضافة تحت خالص -->
             <button id="addContentBtn" class="add-content-btn" style="display:none;" onclick="openAddModal()">
                 ➕ إضافة سؤال / محتوى جديد
             </button>
@@ -232,7 +245,8 @@
             </div>
         </div>
     </div>
-            <script type="module">
+
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
@@ -249,10 +263,47 @@
         const db = getFirestore(app);
 
         const SECRET_CODE = "01024897145";
-        let isAdmin = localStorage.getItem('bakaloria_admin') === 'true';
+        let isAdmin = false;
         let currentSubject = "";
         let currentItems = [];
         let editingItemId = null;
+
+        // 🌟 1. فحص جلسة المستخدم (الاسم والصلاحيات)
+        function checkUserSession() {
+            const userStr = localStorage.getItem('bakaloria_user');
+            const userBar = document.getElementById('userBar');
+            const welcomeText = document.getElementById('welcomeText');
+            const adminBadge = document.getElementById('adminBadge');
+
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                welcomeText.textContent = '👋 أهلاً، ' + user.username;
+                userBar.style.display = 'flex';
+
+                if (user.role === 'admin') {
+                    adminBadge.style.display = 'inline-block';
+                    isAdmin = true; 
+                    localStorage.setItem('bakaloria_admin', 'true'); // عشان باقي الملفات تعرف إنه مدير
+                } else {
+                    isAdmin = false;
+                    localStorage.removeItem('bakaloria_admin');
+                }
+            } else {
+                userBar.style.display = 'none';
+                // لو مش مسجل دخول، نعتبره طالب عادي
+                isAdmin = false; 
+            }
+            updateAdminUI();
+        }
+
+        // 🌟 2. تسجيل الخروج
+        window.confirmLogout = function() {
+            if (confirm("هل تريد تسجيل الخروج؟")) {
+                localStorage.removeItem('bakaloria_user');
+                localStorage.removeItem('bakaloria_admin');
+                window.location.href = 'login.html'; // نوديه لصفحة تسجيل الدخول
+            }
+        };
 
         // عداد الزوار
         let visits = localStorage.getItem('bakaloria_visits');
@@ -291,6 +342,7 @@
             }
         });
 
+        // تسجيل الدخول بالكود السري (للمدير)
         window.checkAdminCode = function() {
             const val = document.getElementById('adminCodeInput').value.trim();
             if (val && val === SECRET_CODE) {
@@ -299,7 +351,7 @@
                 closeModal('adminLoginModal');
                 document.getElementById('adminCodeInput').value = '';
                 updateAdminUI();
-                alert('✅ تم تسجيل الدخول كمدير');
+                alert('✅ تم تفعيل وضع المدير');
             } else { alert('❌ الكود غير صحيح'); }
         };
 
@@ -322,8 +374,10 @@
             
             if (pageId === 'home') {
                 mainHeader.style.display = 'flex';
+                document.getElementById('userBar').style.display = localStorage.getItem('bakaloria_user') ? 'flex' : 'none';
             } else {
                 mainHeader.style.display = 'none';
+                document.getElementById('userBar').style.display = 'none';
             }
             
             window.scrollTo(0, 0);
@@ -365,13 +419,11 @@
             }
         };
 
-        // 🌟 دالة عرض الميديا (بتظهر الصورة والـ PDF جوه الصفحة مع زرار تكبير)
+        // دالة عرض الميديا (بتظهر الصورة والـ PDF جوه الصفحة مع زرار تكبير)
         function getMediaHtml(url, title) {
             if (!url) return '';
             let u = url.toLowerCase();
             
-            // 1. الصور (حتى لو الرابط مش منتهي بـ jpg)
-            // لو الرابط مش فيه كلمة pdf أو youtube أو mp4 أو mp3، بنعتبره صورة
             if (!u.includes('.pdf') && !u.includes('drive.google.com') && !u.includes('youtube.com') && !u.includes('youtu.be') && !u.match(/\.(mp4|webm|ogg|mov|mp3|wav|ogg|m4a)$/)) {
                 return `
                     <div style="position: relative; margin-top: 15px;">
@@ -383,23 +435,19 @@
                 `;
             }
             
-            // 2. الفيديو
             if (u.match(/\.(mp4|webm|ogg|mov)$/) != null) {
                 return `<div class="media-container"><video controls src="${url}"></video></div>`;
             }
             
-            // 3. الصوت
             if (u.match(/\.(mp3|wav|ogg|m4a)$/) != null) {
                 return `<div class="media-container" style="background:transparent; border:none;"><audio controls src="${url}"></audio></div>`;
             }
             
-            // 4. يوتيوب
             if (u.includes('youtube.com') || u.includes('youtu.be')) {
                 let vidId = u.includes('youtu.be') ? u.split('/').pop().split('?')[0] : new URLSearchParams(new URL(url).search).get('v');
                 if (vidId) return `<div class="media-container"><iframe src="https://www.youtube.com/embed/${vidId}" allowfullscreen></iframe></div>`;
             }
             
-            // 5. ملفات الـ PDF
             if (u.includes('.pdf') || u.includes('drive.google.com')) {
                 let finalUrl = url;
                 if (u.includes('drive.google.com')) {
@@ -420,7 +468,6 @@
                 `;
             }
             
-            // 6. أي رابط تاني
             return `<a href="${url}" target="_blank" style="display:inline-block;margin-top:15px;background:#4f46e5;color:#fff;padding:10px 20px;border-radius:10px;text-decoration:none;font-weight:800;">🔗 فتح الرابط</a>`;
         }
 
@@ -483,11 +530,13 @@
                 closeModal('editContentModal'); loadSubjectContent();
             } catch (e) { alert('خطأ: ' + e.message); }
         };
-
-        window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
+                window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
         window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-        document.addEventListener('DOMContentLoaded', () => { updateAdminUI(); });
+        // تشغيل الفحص أول ما الصفحة تفتح
+        document.addEventListener('DOMContentLoaded', () => { 
+            checkUserSession(); 
+        });
     </script>
 </body>
 </html>
