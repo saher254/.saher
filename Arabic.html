@@ -31,17 +31,18 @@
     .btn-small { padding: 5px 10px; font-size: 12px; }
     .hidden { display: none !important; }
 
-    /* صفحة الوحدات (بالعرض) */
-    #page-units { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+    /* 🌟 صفحة الوحدات (مستطيلات طويلة تحت بعض) */
+    #page-units { display: flex; flex-direction: column; gap: 15px; } /* Flex Column عشان يبقوا تحت بعض */
     .unit-card { 
-        background: var(--card); border: 2px solid var(--border); border-radius: 16px; 
-        padding: 20px; cursor: pointer; transition: 0.3s; width: calc(50% - 10px); min-width: 140px;
-        text-align: center; position: relative;
+        background: var(--card); border: 2px solid var(--border); border-radius: 20px; 
+        padding: 25px 30px; cursor: pointer; transition: 0.3s; width: 100%; /* العرض كامل */
+        display: flex; justify-content: space-between; align-items: center; position: relative;
     }
     .unit-card:hover { border-color: #4f46e5; transform: translateY(-3px); box-shadow: var(--shadow); }
-    .unit-card h3 { font-size: 18px; font-weight: 800; color: var(--text); }
-    .unit-card p { font-size: 13px; color: var(--muted); margin-top: 5px; }
-    .unit-card-admin { position: absolute; top: 5px; left: 5px; display: flex; gap: 5px; }
+    .unit-card h3 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+    .unit-card p { font-size: 15px; color: var(--muted); }
+    .unit-card-admin { position: absolute; top: 15px; left: 15px; display: flex; gap: 5px; }
+    .unit-card .arrow-icon { font-size: 24px; color: #4f46e5; background: rgba(79, 70, 229, 0.1); width: 45px; height: 45px; display: grid; place-items: center; border-radius: 50%; }
 
     /* صفحة الدروس */
     #page-lessons { display: none; }
@@ -64,10 +65,10 @@
     .empty-msg { padding: 20px; text-align: center; color: var(--muted); width: 100%; }
 </style>
 </head>
-    <body>
+<body>
     <div class="container">
         
-        <!-- لوحة تحكم المدير (مخفية) -->
+        <!-- لوحة تحكم المدير -->
         <section id="adminPanel" class="admin-panel hidden">
             <h2>🛠️ لوحة تحكم المدير</h2>
             <h3>① إضافة وحدة</h3>
@@ -88,12 +89,10 @@
             <button id="addItemBtn" class="btn-primary">💾 حفظ</button>
         </section>
 
-        <!-- 🌟 الصفحة الأولى: الوحدات (بالعرض) -->
-        <div id="page-units">
-            <!-- الوحدات هتظهر هنا جنب بعض -->
-        </div>
+        <!-- 🌟 الصفحة الأولى: الوحدات -->
+        <div id="page-units"></div>
 
-        <!-- 🌟 الصفحة الثانية: الدروس (تظهر لما تدوس على وحدة) -->
+        <!-- 🌟 الصفحة الثانية: الدروس -->
         <div id="page-lessons">
             <button class="back-btn" onclick="showUnitsPage()">🔙 رجوع للوحدات</button>
             <h2 id="currentUnitTitle" style="font-size:22px; margin-bottom:15px; color:#4f46e5;"></h2>
@@ -101,7 +100,8 @@
         </div>
 
     </div>
-            <script type="module">
+
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
@@ -163,7 +163,7 @@
         }
         document.getElementById('contentUnit').addEventListener('change', fillLessonSelector);
 
-        // 🌟 عرض صفحة الوحدات (بالعرض)
+        // 🌟 عرض الوحدات (مستطيلات عريضة تحت بعض)
         function renderUnitsPage() {
             const container = document.getElementById('page-units');
             container.innerHTML = '';
@@ -172,7 +172,7 @@
             units.forEach(unit => {
                 const card = document.createElement('div');
                 card.className = 'unit-card';
-                card.onclick = () => openUnit(unit.id, unit.title); // فتح الوحدة
+                card.onclick = () => openUnit(unit.id, unit.title);
 
                 let adminBtns = '';
                 if (isAdmin) {
@@ -182,14 +182,19 @@
                     </div>`;
                 }
 
-                card.innerHTML = `${adminBtns}
-                    <h3>📘 ${unit.title}</h3>
-                    <p>${lessons.filter(l => l.parentId === unit.id).length} دروس</p>`;
+                card.innerHTML = `
+                    ${adminBtns}
+                    <div>
+                        <h3>📘 ${unit.title}</h3>
+                        <p>${lessons.filter(l => l.parentId === unit.id).length} دروس</p>
+                    </div>
+                    <div class="arrow-icon">⬅️</div>
+                `;
                 container.appendChild(card);
             });
         }
 
-        // 🌟 نقل الشاشة لصفحة الدروس
+        // نقل الشاشة لصفحة الدروس
         window.openUnit = function(unitId, unitTitle) {
             selectedUnitId = unitId;
             document.getElementById('currentUnitTitle').textContent = "📖 " + unitTitle;
@@ -199,7 +204,7 @@
             window.scrollTo(0, 0);
         };
 
-        // 🌟 الرجوع لصفحة الوحدات
+        // الرجوع لصفحة الوحدات
         window.showUnitsPage = function() {
             selectedUnitId = null;
             document.getElementById('page-lessons').style.display = 'none';
@@ -207,7 +212,7 @@
             window.scrollTo(0, 0);
         };
 
-        // 🌟 عرض دروس الوحدة
+        // عرض دروس الوحدة
         function renderLessonsPage(unitId) {
             const container = document.getElementById('lessonsContainer');
             container.innerHTML = '';
