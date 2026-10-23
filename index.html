@@ -34,7 +34,7 @@
         body.dark #themeToggle .icon { right: 28px; background: #f59e0b; color: #fff; }
         #themeToggle:hover { transform: scale(1.05); }
 
-        /* شريط الطالب (الاسم وتسجيل الخروج) */
+        /* شريط المستخدم */
         #userBar { background: #1e293b; color: #fff; padding: 10px 20px; display: none; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; border-bottom: 2px solid #4f46e5; }
         .user-info { display: flex; align-items: center; gap: 10px; }
         .user-name { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
@@ -43,7 +43,7 @@
         .logout-btn:hover { background: #dc2626; }
 
         /* شريط الزوار (للمدير) */
-        #adminBar { background: #0f172a; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; transition: 0.3s; }
+        #adminBar { background: #0f172a; color: #fff; padding: 10px 20px; display: none; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; transition: 0.3s; }
         .admin-stats { display: flex; gap: 15px; align-items: center; }
         .visitor-count { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; color: #10b981; }
 
@@ -115,7 +115,6 @@
     </style>
 </head>
     <body>
-    <!-- الهيدر -->
     <header class="main-header" id="mainHeader">
         <h1 onclick="showPage('home')">🎓 منصة البكالوريا</h1>
         <button id="themeToggle" title="تغيير المظهر">
@@ -123,7 +122,7 @@
         </button>
     </header>
 
-    <!-- 🌟 شريط الطالب (بيظهر بس لما يسجل دخول) -->
+    <!-- شريط الطالب -->
     <div id="userBar">
         <div class="user-info">
             <span id="welcomeText">👋 أهلاً بك</span>
@@ -134,7 +133,7 @@
         </button>
     </div>
 
-    <!-- شريط الزوار (للمدير) -->
+    <!-- شريط الزوار (للمدير فقط) -->
     <div id="adminBar" style="display:none;">
         <div class="admin-stats">
             <span class="visitor-count">👁️ زوار المنصة: <span id="visitsCount">0</span></span>
@@ -268,30 +267,31 @@
         let currentItems = [];
         let editingItemId = null;
 
-        // 🌟 1. فحص جلسة المستخدم (الاسم والصلاحيات)
+        // 🌟 1. فحص جلسة المستخدم (الطرد لصفحة تسجيل الدخول)
         function checkUserSession() {
             const userStr = localStorage.getItem('bakaloria_user');
+
+            // لو مش مسجل دخول، يروح على طول لصفحة تسجيل الدخول
+            if (!userStr) {
+                window.location.href = 'login.html';
+                return; 
+            }
+
             const userBar = document.getElementById('userBar');
             const welcomeText = document.getElementById('welcomeText');
             const adminBadge = document.getElementById('adminBadge');
 
-            if (userStr) {
-                const user = JSON.parse(userStr);
-                welcomeText.textContent = '👋 أهلاً، ' + user.username;
-                userBar.style.display = 'flex';
+            const user = JSON.parse(userStr);
+            welcomeText.textContent = '👋 أهلاً، ' + user.username;
+            userBar.style.display = 'flex';
 
-                if (user.role === 'admin') {
-                    adminBadge.style.display = 'inline-block';
-                    isAdmin = true; 
-                    localStorage.setItem('bakaloria_admin', 'true'); // عشان باقي الملفات تعرف إنه مدير
-                } else {
-                    isAdmin = false;
-                    localStorage.removeItem('bakaloria_admin');
-                }
+            if (user.role === 'admin') {
+                adminBadge.style.display = 'inline-block';
+                isAdmin = true; 
+                localStorage.setItem('bakaloria_admin', 'true');
             } else {
-                userBar.style.display = 'none';
-                // لو مش مسجل دخول، نعتبره طالب عادي
-                isAdmin = false; 
+                isAdmin = false;
+                localStorage.removeItem('bakaloria_admin');
             }
             updateAdminUI();
         }
@@ -301,7 +301,7 @@
             if (confirm("هل تريد تسجيل الخروج؟")) {
                 localStorage.removeItem('bakaloria_user');
                 localStorage.removeItem('bakaloria_admin');
-                window.location.href = 'login.html'; // نوديه لصفحة تسجيل الدخول
+                window.location.href = 'login.html';
             }
         };
 
@@ -342,7 +342,6 @@
             }
         });
 
-        // تسجيل الدخول بالكود السري (للمدير)
         window.checkAdminCode = function() {
             const val = document.getElementById('adminCodeInput').value.trim();
             if (val && val === SECRET_CODE) {
@@ -374,7 +373,8 @@
             
             if (pageId === 'home') {
                 mainHeader.style.display = 'flex';
-                document.getElementById('userBar').style.display = localStorage.getItem('bakaloria_user') ? 'flex' : 'none';
+                const hasUser = localStorage.getItem('bakaloria_user');
+                document.getElementById('userBar').style.display = hasUser ? 'flex' : 'none';
             } else {
                 mainHeader.style.display = 'none';
                 document.getElementById('userBar').style.display = 'none';
@@ -419,7 +419,6 @@
             }
         };
 
-        // دالة عرض الميديا (بتظهر الصورة والـ PDF جوه الصفحة مع زرار تكبير)
         function getMediaHtml(url, title) {
             if (!url) return '';
             let u = url.toLowerCase();
@@ -530,7 +529,8 @@
                 closeModal('editContentModal'); loadSubjectContent();
             } catch (e) { alert('خطأ: ' + e.message); }
         };
-                window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
+
+        window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
         window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
         // تشغيل الفحص أول ما الصفحة تفتح
@@ -540,4 +540,4 @@
     </script>
 </body>
 </html>
-        
+    
