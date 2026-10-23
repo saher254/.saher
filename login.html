@@ -1,30 +1,98 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الدخول | منصة البكالوريا</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-    :root { --bg: #f8fafc; --text: #0f172a; --card: #ffffff; --accent: #4f46e5; --border: #e2e8f0; --danger: #ef4444; --muted: #64748b; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background-image: radial-gradient(circle at top right, rgba(79, 70, 229, 0.1), transparent 40%), radial-gradient(circle at bottom left, rgba(79, 70, 229, 0.05), transparent 40%); }
-    
-    .login-card { background: var(--card); padding: 40px 30px; border-radius: 24px; width: 90%; max-width: 420px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid var(--border); }
-    .icon { font-size: 50px; margin-bottom: 15px; }
-    h1 { font-size: 26px; font-weight: 900; margin-bottom: 8px; color: var(--accent); }
-    p { color: var(--muted); font-size: 14px; margin-bottom: 25px; }
-    input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); color: var(--text); font-size: 16px; outline: none; transition: 0.3s; }
-    input:focus { border-color: var(--accent); }
-    button { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--accent); color: white; font-size: 18px; font-weight: 800; cursor: pointer; transition: 0.3s; }
-    button:hover { background: #4338ca; transform: translateY(-2px); }
-    .toggle-link { display: block; margin-top: 15px; color: var(--accent); font-weight: 700; cursor: pointer; font-size: 14px; }
-    .error-msg { color: var(--danger); font-size: 14px; margin-top: 15px; font-weight: 700; display: none; }
-    
-    .main-footer { margin-top: 30px; text-align: center; }
-    .main-footer a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 14px; padding: 10px 20px; border: 1px solid var(--border); border-radius: 50px; transition: 0.3s; }
-    .main-footer a:hover { color: var(--accent); border-color: var(--accent); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>تسجيل الدخول | منصة البكالوريا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg: #f8fafc; --text: #0f172a; --card: #ffffff; --accent: #4f46e5; 
+            --border: #e2e8f0; --danger: #ef4444; --muted: #64748b; 
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            background-image: radial-gradient(circle at top right, rgba(79, 70, 229, 0.1), transparent 40%), radial-gradient(circle at bottom left, rgba(79, 70, 229, 0.05), transparent 40%);
+            padding: 20px;
+        }
+        
+        .login-card { 
+            background: var(--card); 
+            padding: 40px 30px; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 420px; 
+            text-align: center; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+            border: 1px solid var(--border); 
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .icon { font-size: 50px; margin-bottom: 15px; display: inline-block; }
+        h1 { font-size: 26px; font-weight: 900; margin-bottom: 8px; color: var(--accent); }
+        p { color: var(--muted); font-size: 14px; margin-bottom: 25px; }
+        
+        input { 
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-radius: 12px; 
+            border: 2px solid var(--border); 
+            background: var(--bg); 
+            color: var(--text); 
+            font-size: 16px; 
+            outline: none; 
+            transition: 0.3s; 
+            text-align: right;
+        }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            border-radius: 12px; 
+            border: none; 
+            background: var(--accent); 
+            color: white; 
+            font-size: 18px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        button:hover { background: #4338ca; transform: translateY(-2px); }
+        
+        .toggle-link { display: block; margin-top: 15px; color: var(--accent); font-weight: 700; cursor: pointer; font-size: 14px; }
+        .toggle-link:hover { text-decoration: underline; }
+        
+        .error-msg { color: var(--danger); font-size: 14px; margin-top: 15px; font-weight: 700; display: none; }
+        
+        .main-footer { margin-top: 30px; text-align: center; }
+        .main-footer a { 
+            color: var(--muted); 
+            text-decoration: none; 
+            font-weight: 700; 
+            font-size: 14px; 
+            padding: 10px 20px; 
+            border: 1px solid var(--border); 
+            border-radius: 50px; 
+            transition: 0.3s; 
+            display: inline-block;
+        }
+        .main-footer a:hover { color: var(--accent); border-color: var(--accent); }
+    </style>
 </head>
 <body>
 
@@ -42,14 +110,13 @@
         <div class="error-msg" id="errorMsg"></div>
     </div>
 
-    <!-- الفوتر -->
     <footer class="main-footer">
         <a href="tel:01024897145">📞 ساهر للتواصل: 01024897145</a>
     </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDe5INvR_ifEARHmw7M0qqBQ34-G6z4p7w",
@@ -98,12 +165,10 @@
             btn.disabled = true;
 
             try {
-                // التحقق من وجود المستخدم
                 const q = query(collection(db, "students"), where("username", "==", username));
                 const snapshot = await getDocs(q);
 
                 if (isLoginMode) {
-                    // حالة تسجيل الدخول
                     if (snapshot.empty) {
                         errorMsg.style.display = 'block';
                         errorMsg.textContent = '❌ الاسم غير مسجل، قم بإنشاء حساب جديد.';
@@ -112,12 +177,10 @@
                         const userData = userDoc.data();
 
                         if (userData.password === password) {
-                            // نجاح تسجيل الدخول
                             localStorage.setItem('bakaloria_user', JSON.stringify({ id: userDoc.id, username: userData.username, role: userData.role }));
                             
-                            // التوجيه حسب الصلاحية
                             if (userData.role === 'admin') {
-                                localStorage.setItem('bakaloria_admin', 'true'); // تفعيل وضع المدير
+                                localStorage.setItem('bakaloria_admin', 'true');
                             }
                             window.location.href = 'index.html';
                         } else {
@@ -126,18 +189,15 @@
                         }
                     }
                 } else {
-                    // حالة إنشاء حساب جديد
                     if (!snapshot.empty) {
                         errorMsg.style.display = 'block';
                         errorMsg.textContent = '❌ هذا الاسم مسجل بالفعل، جرب اسماً آخر.';
                     } else {
-                        // تحديد الصلاحية: لو الاسم "ساهر" وكلمة المرور "1472580" يصبح مدير
                         let role = 'student';
                         if (username === 'ساهر' && password === '1472580') {
                             role = 'admin';
                         }
                         
-                        // إضافة المستخدم في القاعدة
                         const newDoc = await addDoc(collection(db, "students"), {
                             username: username,
                             password: password,
@@ -160,6 +220,10 @@
                 btn.disabled = false;
             }
         };
+
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') handleLogin();
+        });
     </script>
 </body>
 </html>
