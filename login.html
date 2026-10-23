@@ -96,6 +96,12 @@
         .main-footer a:hover { color: var(--accent); border-color: var(--accent); }
     </style>
 </head>
+<script>
+    // الكود ده بيخلي المنصة تفتح على الوضع النهاري (الأبيض) أول مرة
+    if (!localStorage.getItem('bakaloria_theme')) {
+        localStorage.setItem('bakaloria_theme', 'light');
+    }
+</script>
 <body>
 
     <div class="login-card">
