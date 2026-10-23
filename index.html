@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6033212246748015"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6033212246748015" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة البكالوريا التعليمية - ساهر</title>
@@ -30,6 +29,10 @@
         .main-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: var(--accent); color: var(--accent-text); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: 0.4s; }
         .main-header h1 { font-size: 22px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 800; }
         
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        #searchToggle { background: rgba(255,255,255,0.15); border: none; color: #fff; font-size: 18px; width: 45px; height: 45px; border-radius: 12px; cursor: pointer; display: grid; place-items: center; transition: 0.3s; }
+        #searchToggle:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
+
         #themeToggle { width: 60px; height: 32px; border-radius: 50px; background: #ffffff; border: 2px solid #cbd5e1; position: relative; cursor: pointer; transition: all 0.4s ease; outline: none; display: flex; align-items: center; }
         body.dark #themeToggle { background: #334155; border-color: #64748b; }
         #themeToggle .icon { width: 24px; height: 24px; border-radius: 50%; background: #4f46e5; color: #fff; display: grid; place-items: center; font-size: 14px; position: absolute; right: 4px; transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1); }
@@ -116,39 +119,32 @@
         .footer-contact-btn:hover { border-color: #10b981; color: #10b981; transform: translateY(-2px); }
     </style>
 </head>
-<script>
-    // الكود ده بيخلي المنصة تفتح على الوضع النهاري (الأبيض) أول مرة
-    if (!localStorage.getItem('bakaloria_theme')) {
-        localStorage.setItem('bakaloria_theme', 'light');
-    }
-</script>
     <body>
     <header class="main-header" id="mainHeader">
         <h1 onclick="showPage('home')">🎓 منصة البكالوريا</h1>
-        <button id="themeToggle" title="تغيير المظهر">
-            <span class="icon">🌙</span>
-        </button>
+        <div class="header-actions">
+            <button id="searchToggle" onclick="showPage('search')" title="بحث">🔍</button>
+            <button id="themeToggle" title="تغيير المظهر">
+                <span class="icon">🌙</span>
+            </button>
+        </div>
     </header>
 
-    <!-- شريط الطالب -->
     <div id="userBar">
         <div class="user-info">
             <span id="welcomeText">👋 أهلاً بك</span>
             <span id="adminBadge" class="admin-badge" style="display:none;">مدير</span>
         </div>
-        <button class="logout-btn" onclick="confirmLogout()">
-            🚪 تسجيل الخروج
-        </button>
+        <button class="logout-btn" onclick="confirmLogout()">🚪 تسجيل الخروج</button>
     </div>
 
-    <!-- شريط الزوار (للمدير فقط) -->
     <div id="adminBar" style="display:none;">
         <div class="admin-stats">
             <span class="visitor-count">👁️ زوار المنصة: <span id="visitsCount">0</span></span>
         </div>
     </div>
 
-    <!-- ==================== 1. الصفحة الرئيسية ==================== -->
+    <!-- الصفحة الرئيسية -->
     <div id="page-home" class="page active">
         <div class="home-hero">
             <h2>مرحباً بك في منصة البكالوريا 🚀</h2>
@@ -175,10 +171,11 @@
             <div class="subject-card" onclick="openSubject('quiz', 'اسئله لجميع المواد')">
                 <h2>اسئله لجميع المواد</h2><span class="arrow">⬅️</span>
             </div>
+            
             <!-- المستطيل السابع الجديد -->
-<div class="subject-card" onclick="openEmbedded('test.html', '📝 اختبر نفسك (الاختبار الشامل)')">
-    <h2>📝 اختبر نفسك (الاختبار الشامل)</h2><span class="arrow">⬅️</span>
-</div>
+            <div class="subject-card" onclick="openEmbedded('test.html', '📝 اختبر نفسك (الاختبار الشامل)')">
+                <h2>📝 اختبر نفسك (الاختبار الشامل)</h2><span class="arrow">⬅️</span>
+            </div>
         </div>
 
         <footer class="main-footer">
@@ -188,7 +185,16 @@
         </footer>
     </div>
 
-    <!-- ==================== 2. صفحة الملفات المدمجة ==================== -->
+    <!-- صفحة البحث الجديدة -->
+    <div id="page-search" class="page">
+        <div style="max-width: 800px; margin: 30px auto; padding: 0 20px; width: 100%;">
+            <h2 style="text-align:center; color:var(--text); margin-bottom:20px; font-size:28px;">🔍 البحث في المنصة</h2>
+            <input type="text" id="searchInput" placeholder="اكتب اسم المادة اللي بتدور عليها..." oninput="performSearch()" style="width:100%; padding:15px 20px; border-radius:16px; border:2px solid var(--border); background:var(--card); color:var(--text); font-size:18px; outline:none; transition:0.3s; box-shadow:var(--shadow);">
+            <div id="searchResults" style="margin-top:25px; display:flex; flex-direction:column; gap:15px;"></div>
+        </div>
+    </div>
+
+    <!-- صفحة الملفات المدمجة -->
     <div id="page-embedded" class="page">
         <div class="embedded-header">
             <button class="back-btn-small" onclick="showPage('home')">🔙 رجوع</button>
@@ -196,7 +202,7 @@
         <iframe id="embeddedFrame" class="iframe-container" sandbox="allow-scripts allow-forms allow-same-origin allow-modals allow-popups"></iframe>
     </div>
 
-    <!-- ==================== 3. صفحة اختبر نفسك ==================== -->
+    <!-- صفحة اختبر نفسك -->
     <div id="page-subject" class="page">
         <div class="page-header">
             <button class="back-btn" onclick="showPage('home')">🔙 رجوع</button>
@@ -213,7 +219,7 @@
         </div>
     </div>
 
-    <!-- ==================== المودالات ==================== -->
+    <!-- المودالات -->
     <div id="adminLoginModal" class="modal">
         <div class="modal-content">
             <h3>🔐 أدخل كود المدير</h3>
@@ -256,8 +262,7 @@
             </div>
         </div>
     </div>
-
-    <script type="module">
+            <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
@@ -279,11 +284,45 @@
         let currentItems = [];
         let editingItemId = null;
 
-        // 🌟 1. فحص جلسة المستخدم (الطرد لصفحة تسجيل الدخول)
+        // 🌟 بيانات المواد للبحث
+        const subjectsData = [
+            { title: '📖 مادة العربي', file: 'Arabic.html' },
+            { title: '💻 مادة البرمجة', file: 'programming.html' },
+            { title: '🇬🇧 مادة الإنجليزي', file: 'English.html' },
+            { title: '🏛️ مادة التاريخ', file: 'History.html' },
+            { title: '🚀 منصة جافا سكريبت للتعلم مجاناً', file: 'javascript.html' },
+            { title: 'اسئله لجميع المواد', file: 'quiz' },
+            { title: '📝 اختبر نفسك (الاختبار الشامل)', file: 'test.html' }
+        ];
+
+        // 🌟 دالة البحث
+        window.performSearch = function() {
+            const term = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!term) {
+                resultsDiv.innerHTML = '<p style="text-align:center; color:var(--muted);">ابدأ بكتابة اسم المادة للبحث...</p>';
+                return;
+            }
+
+            const matches = subjectsData.filter(sub => sub.title.toLowerCase().includes(term));
+
+            if (matches.length === 0) {
+                resultsDiv.innerHTML = '<p style="text-align:center; color:var(--danger); font-weight:bold;">لا توجد نتائج مطابقة لبحثك.</p>';
+                return;
+            }
+
+            resultsDiv.innerHTML = matches.map(sub => `
+                <div class="subject-card" onclick="${sub.file === 'quiz' ? `openSubject('quiz', '${sub.title}')` : `openEmbedded('${sub.file}', '${sub.title}')`}">
+                    <h2>${sub.title}</h2><span class="arrow">⬅️</span>
+                </div>
+            `).join('');
+        };
+
+        // فحص جلسة المستخدم
         function checkUserSession() {
             const userStr = localStorage.getItem('bakaloria_user');
 
-            // لو مش مسجل دخول، يروح على طول لصفحة تسجيل الدخول
             if (!userStr) {
                 window.location.href = 'login.html';
                 return; 
@@ -308,7 +347,7 @@
             updateAdminUI();
         }
 
-        // 🌟 2. تسجيل الخروج
+        // تسجيل الخروج
         window.confirmLogout = function() {
             if (confirm("هل تريد تسجيل الخروج؟")) {
                 localStorage.removeItem('bakaloria_user');
@@ -383,13 +422,19 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
             
-            if (pageId === 'home') {
+            if (pageId === 'home' || pageId === 'search') {
                 mainHeader.style.display = 'flex';
                 const hasUser = localStorage.getItem('bakaloria_user');
                 document.getElementById('userBar').style.display = hasUser ? 'flex' : 'none';
             } else {
                 mainHeader.style.display = 'none';
                 document.getElementById('userBar').style.display = 'none';
+            }
+            
+            if (pageId === 'search') {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('searchResults').innerHTML = '<p style="text-align:center; color:var(--muted);">ابدأ بكتابة اسم المادة للبحث...</p>';
+                setTimeout(() => document.getElementById('searchInput').focus(), 100);
             }
             
             window.scrollTo(0, 0);
@@ -545,11 +590,11 @@
         window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
         window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-        // تشغيل الفحص أول ما الصفحة تفتح
         document.addEventListener('DOMContentLoaded', () => { 
             checkUserSession(); 
+            document.getElementById('searchResults').innerHTML = '<p style="text-align:center; color:var(--muted);">ابدأ بكتابة اسم المادة للبحث...</p>';
         });
     </script>
 </body>
 </html>
-    
+
