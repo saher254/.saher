@@ -31,11 +31,11 @@
     .btn-small { padding: 5px 10px; font-size: 12px; }
     .hidden { display: none !important; }
 
-    /* 🌟 صفحة الوحدات (مستطيلات طويلة تحت بعض) */
-    #page-units { display: flex; flex-direction: column; gap: 15px; } /* Flex Column عشان يبقوا تحت بعض */
+    /* 🌟 صفحة الوحدات (مستطيلات عريضة تحت بعض) */
+    #page-units { display: flex; flex-direction: column; gap: 15px; width: 100%; }
     .unit-card { 
         background: var(--card); border: 2px solid var(--border); border-radius: 20px; 
-        padding: 25px 30px; cursor: pointer; transition: 0.3s; width: 100%; /* العرض كامل */
+        padding: 25px 30px; cursor: pointer; transition: 0.3s; width: 100%;
         display: flex; justify-content: space-between; align-items: center; position: relative;
     }
     .unit-card:hover { border-color: #4f46e5; transform: translateY(-3px); box-shadow: var(--shadow); }
