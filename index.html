@@ -47,10 +47,8 @@
         .logout-btn { background: #ef4444; color: #fff; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .logout-btn:hover { background: #dc2626; }
 
-        /* شريط الزوار (للمدير) */
+        /* شريط الإدارة (من غير زوار) */
         #adminBar { background: #0f172a; color: #fff; padding: 10px 20px; display: none; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; transition: 0.3s; }
-        .admin-stats { display: flex; gap: 15px; align-items: center; }
-        .visitor-count { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; color: #10b981; }
 
         .page { display: none; flex: 1; flex-direction: column; }
         .page.active { display: flex; animation: fadeIn 0.4s ease-out; }
@@ -139,9 +137,7 @@
     </div>
 
     <div id="adminBar" style="display:none;">
-        <div class="admin-stats">
-            <span class="visitor-count">👁️ زوار المنصة: <span id="visitsCount">0</span></span>
-        </div>
+        <!-- شيلنا الزوار من هنا -->
     </div>
 
     <!-- الصفحة الرئيسية -->
@@ -172,7 +168,7 @@
                 <h2>اسئله لجميع المواد</h2><span class="arrow">⬅️</span>
             </div>
             
-            <!-- المستطيل السابع الجديد -->
+            <!-- المستطيل السابع -->
             <div class="subject-card" onclick="openEmbedded('test.html', '📝 اختبر نفسك (الاختبار الشامل)')">
                 <h2>📝 اختبر نفسك (الاختبار الشامل)</h2><span class="arrow">⬅️</span>
             </div>
@@ -185,7 +181,7 @@
         </footer>
     </div>
 
-    <!-- صفحة البحث الجديدة -->
+    <!-- صفحة البحث -->
     <div id="page-search" class="page">
         <div style="max-width: 800px; margin: 30px auto; padding: 0 20px; width: 100%;">
             <h2 style="text-align:center; color:var(--text); margin-bottom:20px; font-size:28px;">🔍 البحث في المنصة</h2>
@@ -284,7 +280,7 @@
         let currentItems = [];
         let editingItemId = null;
 
-        // 🌟 بيانات المواد للبحث
+        // بيانات المواد للبحث
         const subjectsData = [
             { title: '📖 مادة العربي', file: 'Arabic.html' },
             { title: '💻 مادة البرمجة', file: 'programming.html' },
@@ -295,7 +291,7 @@
             { title: '📝 اختبر نفسك (الاختبار الشامل)', file: 'test.html' }
         ];
 
-        // 🌟 دالة البحث
+        // دالة البحث
         window.performSearch = function() {
             const term = document.getElementById('searchInput').value.trim().toLowerCase();
             const resultsDiv = document.getElementById('searchResults');
@@ -317,6 +313,16 @@
                     <h2>${sub.title}</h2><span class="arrow">⬅️</span>
                 </div>
             `).join('');
+        };
+
+        // فتح وقفل البحث
+        window.toggleSearch = function() {
+            const searchPage = document.getElementById('page-search');
+            if (searchPage.classList.contains('active')) {
+                showPage('home');
+            } else {
+                showPage('search');
+            }
         };
 
         // فحص جلسة المستخدم
@@ -355,12 +361,6 @@
                 window.location.href = 'login.html';
             }
         };
-
-        // عداد الزوار
-        let visits = localStorage.getItem('bakaloria_visits');
-        if (!visits) { visits = 1; localStorage.setItem('bakaloria_visits', 1); } 
-        else { visits = parseInt(visits) + 1; localStorage.setItem('bakaloria_visits', visits); }
-        document.getElementById('visitsCount').textContent = visits;
 
         const clickSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3");
         clickSound.volume = 0.4;
@@ -439,15 +439,7 @@
             
             window.scrollTo(0, 0);
         };
-// 🌟 دالة فتح وقفل البحث
-window.toggleSearch = function() {
-    const searchPage = document.getElementById('page-search');
-    if (searchPage.classList.contains('active')) {
-        showPage('home'); // لو إحنا في البحث، نرجع للرئيسية
-    } else {
-        showPage('search'); // لو في أي مكان تاني، نروح للبحث
-    }
-};
+
         window.openEmbedded = function(fileName, title) {
             clickSound.play().catch(e => console.log("الصوت اتمنع"));
             const frame = document.getElementById('embeddedFrame');
