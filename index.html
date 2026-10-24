@@ -47,7 +47,6 @@
         .logout-btn { background: #ef4444; color: #fff; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .logout-btn:hover { background: #dc2626; }
 
-        /* شريط الإدارة (من غير زوار) */
         #adminBar { background: #0f172a; color: #fff; padding: 10px 20px; display: none; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; transition: 0.3s; }
 
         .page { display: none; flex: 1; flex-direction: column; }
@@ -136,9 +135,7 @@
         <button class="logout-btn" onclick="confirmLogout()">🚪 تسجيل الخروج</button>
     </div>
 
-    <div id="adminBar" style="display:none;">
-        <!-- شيلنا الزوار من هنا -->
-    </div>
+    <div id="adminBar" style="display:none;"></div>
 
     <!-- الصفحة الرئيسية -->
     <div id="page-home" class="page active">
@@ -172,6 +169,16 @@
             <div class="subject-card" onclick="openEmbedded('test.html', '📝 اختبر نفسك (الاختبار الشامل)')">
                 <h2>📝 اختبر نفسك (الاختبار الشامل)</h2><span class="arrow">⬅️</span>
             </div>
+        </div>
+
+        <!-- 🌟 كود الإعلان هنا (تحت المستطيلات وقبل الفوتر) -->
+        <div style="text-align: center; margin: 20px auto 10px; max-width: 800px; padding: 0 20px;">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-6033212246748015"
+                 data-ad-slot="3731342857"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
         </div>
 
         <footer class="main-footer">
@@ -257,7 +264,7 @@
                 <button class="btn-secondary" onclick="closeModal('editContentModal')">إلغاء</button>
             </div>
         </div>
-    </div>
+                                               </div>
         <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -436,6 +443,15 @@
                 document.getElementById('searchResults').innerHTML = '<p style="text-align:center; color:var(--muted);">ابدأ بكتابة اسم المادة للبحث...</p>';
                 setTimeout(() => document.getElementById('searchInput').focus(), 100);
             }
+
+            // 🌟 تحميل الإعلان لو إحنا في الصفحة الرئيسية
+            if (pageId === 'home') {
+                setTimeout(() => {
+                    try {
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    } catch(e) { console.log('Ad error'); }
+                }, 500);
+            }
             
             window.scrollTo(0, 0);
         };
@@ -593,7 +609,16 @@
         document.addEventListener('DOMContentLoaded', () => { 
             checkUserSession(); 
             document.getElementById('searchResults').innerHTML = '<p style="text-align:center; color:var(--muted);">ابدأ بكتابة اسم المادة للبحث...</p>';
+            
+            // تشغيل الإعلان أول ما الصفحة تفتح
+            setTimeout(() => {
+                try {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                } catch(e) { console.log('Ad error'); }
+            }, 1000);
         });
     </script>
 </body>
 </html>
+
+                                               
