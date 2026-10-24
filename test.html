@@ -6,64 +6,63 @@
 <title>اختبر نفسك | منصة البكالوريا</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --bg: #ffffff; --text: #0f172a; --card: #ffffff; --accent: #4f46e5;
-        --border: #e2e8f0; --danger: #ef4444; --success: #10b981; --muted: #64748b;
-        --shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
-    }
-    body.dark {
-        --bg: #0b1120; --text: #f8fafc; --card: #1e293b; --border: #334155; --muted: #94a3b8; 
-    }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-    body { background: var(--bg); color: var(--text); transition: 0.3s; min-height: 100vh; }
-    .container { max-width: 900px; margin: 25px auto; padding: 0 15px; width: 100%; }
-
+    body { background: #f8fafc; color: #0f172a; min-height: 100vh; }
+    .container { max-width: 900px; margin: 25px auto; padding: 0 15px; }
+    
     /* لوحة التحكم */
-    .admin-panel { border: 2px solid #4f46e5; background: rgba(79, 70, 229, 0.05); border-radius: 20px; padding: 20px; margin-bottom: 25px; }
+    .admin-panel { background: #fff; border: 2px solid #4f46e5; border-radius: 15px; padding: 20px; margin-bottom: 25px; }
     .admin-panel h2 { font-size: 18px; color: #4f46e5; margin-bottom: 10px; }
-    input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 10px; font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); outline: none; }
-    button { font-family: 'Cairo', sans-serif; cursor: pointer; border: none; border-radius: 10px; padding: 10px 15px; font-weight: 700; transition: 0.2s; }
-    .btn-primary { background: #4f46e5; color: #fff; }
+    input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo', sans-serif; }
+    textarea { min-height: 120px; font-family: monospace; }
+    button { cursor: pointer; border: none; border-radius: 8px; padding: 10px 15px; font-weight: bold; font-family: 'Cairo', sans-serif; }
+    .btn-primary { background: #4f46e5; color: #fff; width: 100%; padding: 15px; font-size: 16px; }
     .btn-danger { background: #ef4444; color: #fff; }
-    .btn-secondary { background: #f59e0b; color: #fff; }
-    .btn-success { background: #10b981; color: #fff; }
-    .btn-small { padding: 5px 10px; font-size: 12px; border-radius: 8px; }
+    .btn-edit { background: #f59e0b; color: #fff; }
+    .btn-success { background: #10b981; color: #fff; width: 100%; padding: 15px; font-size: 16px; margin-top: 10px; }
     .hidden { display: none !important; }
 
     /* الكروت */
     .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-    .card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 20px; cursor: pointer; transition: 0.3s; text-align: center; position: relative; }
-    .card:hover { border-color: #4f46e5; transform: translateY(-3px); box-shadow: var(--shadow); }
-    .card h3 { font-size: 18px; font-weight: 800; color: var(--text); }
-    .card p { font-size: 13px; color: var(--muted); margin-top: 5px; }
+    .card { background: #fff; border: 2px solid #ddd; border-radius: 12px; padding: 20px; cursor: pointer; text-align: center; transition: 0.2s; }
+    .card:hover { border-color: #4f46e5; transform: translateY(-3px); }
+    .card h3 { font-size: 18px; color: #0f172a; }
+    .card p { font-size: 13px; color: #666; margin-top: 5px; }
 
     /* الأسئلة */
-    .question-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px; }
-    .question-title { font-size: 18px; font-weight: 800; margin-bottom: 15px; color: var(--text); }
-    .options-list { display: flex; flex-direction: column; gap: 10px; }
-    .option-label { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: 0.2s; font-size: 16px; }
-    .option-label:hover { background: rgba(79,70,229,0.05); }
-    .option-label input { width: 18px; height: 18px; margin: 0; accent-color: #4f46e5; }
+    .question-box { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+    .question-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+    .option-label { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
+    .option-label:hover { background: #f0f0ff; }
+    .option-label input { width: 18px; height: 18px; margin: 0; }
     
-    /* نتائج */
-    .option-label.correct { background: rgba(16, 185, 129, 0.15); border-color: #10b981; color: #059669; font-weight: bold; }
-    .option-label.wrong { background: rgba(239, 68, 68, 0.15); border-color: #ef4444; color: #dc2626; font-weight: bold; }
-    .option-label.disabled { pointer-events: none; opacity: 0.8; }
+    .option-label.correct { background: #d1fae5; border-color: #10b981; font-weight: bold; }
+    .option-label.wrong { background: #fee2e2; border-color: #ef4444; font-weight: bold; }
+    .option-label.disabled { pointer-events: none; }
     
-    .result-box { background: var(--card); border: 2px solid #4f46e5; border-radius: 20px; padding: 30px; text-align: center; margin-top: 20px; box-shadow: var(--shadow); }
-    .result-box h2 { font-size: 30px; color: #4f46e5; margin-bottom: 10px; }
-    .result-box p { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+    .result-box { background: #fff; border: 2px solid #4f46e5; border-radius: 15px; padding: 30px; text-align: center; margin-top: 20px; }
+    .result-box h2 { font-size: 30px; color: #4f46e5; }
+    .result-box p { font-size: 20px; font-weight: bold; margin-top: 10px; }
     
-    .back-btn { background: var(--border); border: none; color: var(--text); padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 700; margin-bottom: 15px; }
+    .back-btn { background: #ddd; color: #0f172a; padding: 8px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
+    
+    .stats-card { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .stats-card h3 { font-size: 16px; }
+    .stats-card .score { font-size: 20px; font-weight: bold; color: #10b981; }
+    .stats-card .score.bad { color: #ef4444; }
 </style>
 </head>
 <body>
     <div class="container">
-        <!-- لوحة المدير -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="font-size:24px; font-weight:900;">📝 اختبر نفسك</h2>
+            <button onclick="showStats()" class="btn-primary" style="width:auto; padding:10px 20px; font-size:16px;">📊 نتائجي</button>
+        </div>
+
+        <!-- لوحة المدير (بتظهر للمدير بس) -->
         <section id="adminPanel" class="admin-panel hidden">
-            <h2>🛠️ لوحة إدارة الاختبارات (للمدير فقط)</h2>
-            
-            <h3>1. إنشاء امتحان جديد</h3>
+            <h2 id="adminPanelTitle">🛠️ إضافة امتحان جديد</h2>
+            <input type="hidden" id="editingExamId" value="">
             <select id="examSubject">
                 <option value="">اختر المادة...</option>
                 <option value="arabic">عربي</option>
@@ -71,33 +70,29 @@
                 <option value="history">تاريخ</option>
                 <option value="programming">برمجة</option>
             </select>
-            <input id="examTitle" placeholder="عنوان الامتحان (مثال: امتحان الوحدة الأولى)">
-            <button id="createExamBtn" class="btn-primary">➕ بدء إضافة الامتحان</button>
+            <input id="examTitle" placeholder="عنوان الامتحان">
+            <textarea id="bulkText" placeholder="السؤال: 
+أ) 
+ب) 
+ج) 
+د) 
+الإجابة: 
 
-            <div id="addQuestionsArea" class="hidden" style="margin-top:20px; border-top:1px dashed var(--border); padding-top:20px;">
-                <h3>2. إضافة الأسئلة</h3>
-                <input id="qText" placeholder="نص السؤال">
-                <input id="opt1" placeholder="الاختيار الأول">
-                <input id="opt2" placeholder="الاختيار الثاني">
-                <input id="opt3" placeholder="الاختيار الثالث (اختياري)">
-                <input id="opt4" placeholder="الاختيار الرابع (اختياري)">
-                <select id="correctAnswer">
-                    <option value="">حدد الإجابة الصحيحة...</option>
-                    <option value="0">الاختيار الأول</option>
-                    <option value="1">الاختيار الثاني</option>
-                    <option value="2">الاختيار الثالث</option>
-                    <option value="3">الاختيار الرابع</option>
-                </select>
-                <button id="addQuestionBtn" class="btn-success">➕ إضافة السؤال للامتحان</button>
-                <button id="finishExamBtn" class="btn-primary" style="margin-top:10px; width:100%;">💾 حفظ الامتحان ونشره</button>
-                <p id="adminMsg" style="text-align:center; margin-top:10px; font-weight:bold;"></p>
-            </div>
+السؤال: 
+أ) 
+ب) 
+ج) 
+د) 
+الإجابة: "></textarea>
+            <button id="parseBtn" class="btn-primary">🔄 تحويل النص إلى أسئلة</button>
+            <div id="parsedQuestions" style="margin-top:20px;"></div>
+            <button id="saveExamBtn" class="btn-success hidden">💾 حفظ الامتحان</button>
+            <button id="cancelEditBtn" class="btn-danger hidden" style="width:100%; margin-top:10px;">❌ إلغاء التعديل</button>
         </section>
 
-        <!-- صفحة اختيار المواد -->
+        <!-- صفحة المواد -->
         <div id="page-subjects">
-            <h2 style="text-align:center; margin-bottom:20px; font-size:26px;">📝 اختر المادة للاختبار</h2>
-            <div class="grid-container" id="subjectsGrid">
+            <div class="grid-container">
                 <div class="card" onclick="loadExams('arabic')"><h3>📖 عربي</h3></div>
                 <div class="card" onclick="loadExams('english')"><h3>🇬🇧 إنجليزي</h3></div>
                 <div class="card" onclick="loadExams('history')"><h3>🏛️ تاريخ</h3></div>
@@ -112,22 +107,25 @@
             <div class="grid-container" id="examsGrid"></div>
         </div>
 
-        <!-- صفحة حل الامتحان -->
+        <!-- صفحة الحل -->
         <div id="page-quiz" class="hidden">
             <button class="back-btn" onclick="showPage('exams')">🔙 رجوع للامتحانات</button>
             <h2 id="quizTitle" style="margin-bottom:20px; font-size:24px; text-align:center;"></h2>
-            <form id="quizForm">
-                <div id="questionsContainer"></div>
-                <button type="button" id="submitQuizBtn" class="btn-primary" style="width:100%; padding:15px; font-size:18px; margin-top:20px;">تسليم الإجابات</button>
-            </form>
+            <div id="questionsContainer"></div>
+            <button type="button" id="submitQuizBtn" class="btn-primary" style="margin-top:20px;">تسليم الإجابات</button>
             <div id="quizResult" class="result-box hidden"></div>
         </div>
 
+        <!-- صفحة النتائج -->
+        <div id="page-stats" class="hidden">
+            <button class="back-btn" onclick="showPage('subjects')">🔙 رجوع للمواد</button>
+            <h2 style="margin-bottom:20px; font-size:24px;">📊 سجل نتائجك</h2>
+            <div id="statsContainer"></div>
+        </div>
     </div>
-
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDe5INvR_ifEARHmw7M0qqBQ34-G6z4p7w",
@@ -141,60 +139,145 @@
         const app = initializeApp(firebaseConfig, "testApp");
         const db = getFirestore(app);
         const examsRef = collection(db, "exams");
+        const resultsRef = collection(db, "exam_results");
 
-        if (localStorage.getItem('bakaloria_theme') === 'dark') { document.body.classList.add('dark'); }
-        
-        // فحص المدير
-        let isAdmin = localStorage.getItem('bakaloria_admin') === 'true';
+        // فحص هل المستخدم مدير ولا طالب
+        let currentUser = JSON.parse(localStorage.getItem('bakaloria_user'));
+        let isAdmin = currentUser && currentUser.role === 'admin';
         if (isAdmin) document.getElementById('adminPanel').classList.remove('hidden');
 
-        let currentSubject = "";
         let currentExamId = null;
-        let tempQuestions = [];
+        let parsedQuestionsData = [];
 
-        // ----- دوال التنقل -----
         window.showPage = function(pageId) {
             document.getElementById('page-subjects').classList.add('hidden');
             document.getElementById('page-exams').classList.add('hidden');
             document.getElementById('page-quiz').classList.add('hidden');
-            
+            document.getElementById('page-stats').classList.add('hidden');
             document.getElementById('page-' + pageId).classList.remove('hidden');
             document.getElementById('quizResult').classList.add('hidden');
         };
 
-        // ----- تحميل الامتحانات -----
+        document.getElementById('parseBtn').addEventListener('click', () => {
+            const text = document.getElementById('bulkText').value.trim();
+            if(!text) return alert("اكتب الأسئلة الأول");
+            const blocks = text.split(/السؤال\s*:/).filter(b => b.trim() !== '');
+            parsedQuestionsData = [];
+            try {
+                blocks.forEach(block => {
+                    const lines = block.split('\n').map(l => l.trim()).filter(l => l !== '');
+                    if (lines.length < 3) return; 
+                    const qText = lines[0];
+                    let options = [];
+                    let correctAnswerText = "";
+                    lines.forEach(line => {
+                        if (line.startsWith('أ)') || line.startsWith('أ-')) options.push(line.replace(/^أ[\)\-]\s*/, ''));
+                        else if (line.startsWith('ب)') || line.startsWith('ب-')) options.push(line.replace(/^ب[\)\-]\s*/, ''));
+                        else if (line.startsWith('ج)') || line.startsWith('ج-')) options.push(line.replace(/^ج[\)\-]\s*/, ''));
+                        else if (line.startsWith('د)') || line.startsWith('د-')) options.push(line.replace(/^د[\)\-]\s*/, ''));
+                        else if (line.includes('الإجابة:')) correctAnswerText = line.replace('الإجابة:', '').trim();
+                    });
+                    if (qText && options.length >= 2 && correctAnswerText) {
+                        let correctIndex = -1;
+                        const letterMap = { 'أ': 0, 'ب': 1, 'ج': 2, 'د': 3 };
+                        if (letterMap[correctAnswerText] !== undefined) correctIndex = letterMap[correctAnswerText];
+                        else correctIndex = options.indexOf(correctAnswerText);
+                        if (correctIndex !== -1) parsedQuestionsData.push({ text: qText, options: options, correctIndex: correctIndex });
+                    }
+                });
+                const previewDiv = document.getElementById('parsedQuestions');
+                if (parsedQuestionsData.length === 0) {
+                    previewDiv.innerHTML = '<p style="color:red; font-weight:bold;">❌ لم يتم التعرف على أي أسئلة.</p>';
+                    document.getElementById('saveExamBtn').classList.add('hidden');
+                } else {
+                    previewDiv.innerHTML = `<p style="color:green; font-weight:bold; margin-bottom:10px;">✅ تم التعرف على ${parsedQuestionsData.length} سؤال:</p>`;
+                    parsedQuestionsData.forEach((q, i) => {
+                        previewDiv.innerHTML += `<div style="background:#f8f8f8; padding:10px; border-radius:8px; margin-bottom:5px;"><b>${i+1}. ${q.text}</b><br><span>${q.options.join(' | ')}</span><br><span style="color:green;">الإجابة: ${q.options[q.correctIndex]}</span></div>`;
+                    });
+                    document.getElementById('saveExamBtn').classList.remove('hidden');
+                }
+            } catch(e) { alert("حدث خطأ في قراءة النص."); }
+        });
+
+        document.getElementById('saveExamBtn').addEventListener('click', async () => {
+            const sub = document.getElementById('examSubject').value;
+            const title = document.getElementById('examTitle').value.trim();
+            const editingId = document.getElementById('editingExamId').value;
+            
+            if(!sub || !title) return alert("اختر المادة واكتب عنوان الامتحان أولاً");
+            if(parsedQuestionsData.length === 0) return alert("لا توجد أسئلة");
+
+            try {
+                if (editingId) {
+                    // تعديل امتحان موجود
+                    await updateDoc(doc(db, "exams", editingId), {
+                        subject: sub, title: title, questions: parsedQuestionsData
+                    });
+                    alert("✅ تم تعديل الامتحان بنجاح!");
+                } else {
+                    // إضافة امتحان جديد
+                    await addDoc(examsRef, { subject: sub, title: title, questions: parsedQuestionsData, createdAt: Date.now() });
+                    alert("✅ تم حفظ الامتحان!");
+                }
+                resetAdminForm();
+            } catch(e) { alert("خطأ: " + e.message); }
+        });
+
+        // إلغاء وضع التعديل
+        document.getElementById('cancelEditBtn').addEventListener('click', resetAdminForm);
+
+        function resetAdminForm() {
+            document.getElementById('examTitle').value = '';
+            document.getElementById('bulkText').value = '';
+            document.getElementById('parsedQuestions').innerHTML = '';
+            document.getElementById('saveExamBtn').classList.add('hidden');
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('editingExamId').value = '';
+            document.getElementById('adminPanelTitle').textContent = '🛠️ إضافة امتحان جديد';
+            document.getElementById('examSubject').value = '';
+            parsedQuestionsData = [];
+        }
+
         window.loadExams = async function(subject) {
-            currentSubject = subject;
             let subjectName = subject === 'arabic' ? '📖 العربي' : subject === 'english' ? '🇬🇧 الإنجليزي' : subject === 'history' ? '🏛️ التاريخ' : '💻 البرمجة';
             document.getElementById('examsTitle').textContent = "امتحانات مادة " + subjectName;
-            
             const examsGrid = document.getElementById('examsGrid');
             examsGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">⏳ جاري التحميل...</p>';
-
             try {
                 const q = query(examsRef, where("subject", "==", subject));
                 const snap = await getDocs(q);
-                
                 if (snap.empty) {
-                    examsGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--muted);">لا توجد امتحانات لهذه المادة بعد.</p>';
+                    examsGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#666;">لا توجد امتحانات.</p>';
                 } else {
                     examsGrid.innerHTML = '';
                     snap.forEach(d => {
                         const exam = d.data();
                         const card = document.createElement('div');
                         card.className = 'card';
-                        card.innerHTML = `
-                            <h3>${exam.title}</h3>
-                            <p>${exam.questions.length} أسئلة</p>
-                        `;
+                        card.innerHTML = `<h3>${exam.title}</h3><p>${exam.questions.length} أسئلة</p>`;
                         card.onclick = () => startQuiz(d.id, exam);
                         
-                        // زرار حذف للمدير
+                        // الأزرار دي بتظهر للمدير بس
                         if (isAdmin) {
+                            const actionDiv = document.createElement('div');
+                            actionDiv.style.marginTop = '10px';
+                            actionDiv.style.display = 'flex';
+                            actionDiv.style.gap = '5px';
+                            actionDiv.style.justifyContent = 'center';
+
+                            // زرار التعديل
+                            const editBtn = document.createElement('button');
+                            editBtn.className = 'btn-edit';
+                            editBtn.textContent = '✏️ تعديل';
+                            editBtn.onclick = (e) => {
+                                e.stopPropagation();
+                                enterEditMode(d.id, exam);
+                            };
+
+                            // زرار الحذف
                             const delBtn = document.createElement('button');
-                            delBtn.className = 'btn-danger btn-small';
+                            delBtn.className = 'btn-danger';
                             delBtn.textContent = '🗑️ حذف';
-                            delBtn.style.marginTop = '10px';
                             delBtn.onclick = async (e) => {
                                 e.stopPropagation();
                                 if(confirm('حذف هذا الامتحان؟')) {
@@ -202,7 +285,10 @@
                                     loadExams(subject);
                                 }
                             };
-                            card.appendChild(delBtn);
+
+                            actionDiv.appendChild(editBtn);
+                            actionDiv.appendChild(delBtn);
+                            card.appendChild(actionDiv);
                         }
                         examsGrid.appendChild(card);
                     });
@@ -211,154 +297,128 @@
             } catch(e) { alert("خطأ: " + e.message); }
         };
 
-        // ----- بدء الامتحان -----
+        // تفعيل وضع التعديل
+        function enterEditMode(id, exam) {
+            document.getElementById('editingExamId').value = id;
+            document.getElementById('adminPanelTitle').textContent = '✏️ تعديل الامتحان: ' + exam.title;
+            document.getElementById('examSubject').value = exam.subject;
+            document.getElementById('examTitle').value = exam.title;
+            
+            // تحويل الأسئلة لنص عشان يتعدل
+            let textStr = "";
+            exam.questions.forEach(q => {
+                textStr += `السؤال: ${q.text}\n`;
+                const labels = ['أ', 'ب', 'ج', 'د'];
+                q.options.forEach((opt, i) => {
+                    textStr += `${labels[i]}) ${opt}\n`;
+                });
+                textStr += `الإجابة: ${labels[q.correctIndex]}\n\n`;
+            });
+            document.getElementById('bulkText').value = textStr.trim();
+            
+            // تخزين الأسئلة المؤقتة في المصفوفة (عشان لو حفظ من غير تعديل في النص)
+            parsedQuestionsData = exam.questions;
+            
+            // إظهار زرار الإلغاء والحفظ
+            document.getElementById('saveExamBtn').classList.remove('hidden');
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         window.startQuiz = function(examId, examData) {
             currentExamId = examId;
             document.getElementById('quizTitle').textContent = examData.title;
             const container = document.getElementById('questionsContainer');
             container.innerHTML = '';
-
             examData.questions.forEach((q, index) => {
                 let optionsHtml = '';
                 q.options.forEach((opt, i) => {
-                    optionsHtml += `
-                        <label class="option-label" id="label-${index}-${i}">
-                            <input type="radio" name="q${index}" value="${i}">
-                            <span>${opt}</span>
-                        </label>
-                    `;
+                    optionsHtml += `<label class="option-label" id="label-${index}-${i}"><input type="radio" name="q${index}" value="${i}"><span>${opt}</span></label>`;
                 });
-
-                container.innerHTML += `
-                    <div class="question-box" id="qbox-${index}">
-                        <div class="question-title">${index + 1}. ${q.text}</div>
-                        <div class="options-list">${optionsHtml}</div>
-                    </div>
-                `;
+                container.innerHTML += `<div class="question-box"><div class="question-title">${index + 1}. ${q.text}</div>${optionsHtml}</div>`;
             });
-
             document.getElementById('submitQuizBtn').style.display = 'block';
-            document.getElementById('submitQuizBtn').disabled = false;
-            document.getElementById('submitQuizBtn').textContent = 'تسليم الإجابات';
             showPage('quiz');
         };
 
-        // ----- تسليم الامتحان وحساب الدرجة -----
         document.getElementById('submitQuizBtn').addEventListener('click', async () => {
-            const q = query(examsRef, where("__name__", "==", currentExamId));
-            // لجلب بيانات الامتحان الحالي من الذاكرة (لأننا مش محتاجين نروح للسيرفر تاني)
-            const examCards = document.querySelectorAll('.question-box');
-            let correctCount = 0;
-            let totalQuestions = examCards.length;
-
-            // هنجيب الامتحان من الزرار اللي دخلنا منه
-            const qSnap = await getDocs(query(examsRef)); // هنجيب الكل ونفلتر
+            const qSnap = await getDocs(query(examsRef)); 
             let examData = null;
             qSnap.forEach(d => { if(d.id === currentExamId) examData = d.data(); });
-
             if(!examData) return;
-
+            let correctCount = 0;
+            let totalQuestions = examData.questions.length;
             examData.questions.forEach((question, index) => {
                 const selected = document.querySelector(`input[name="q${index}"]:checked`);
                 const selectedVal = selected ? parseInt(selected.value) : -1;
-
                 question.options.forEach((_, i) => {
                     const label = document.getElementById(`label-${index}-${i}`);
                     label.classList.add('disabled');
-                    
-                    if (i === question.correctIndex) {
-                        label.classList.add('correct'); // الإجابة الصح خضراء
-                    } else if (i === selectedVal) {
-                        label.classList.add('wrong'); // إجابة الطالب الغلط حمراء
-                    }
+                    if (i === question.correctIndex) label.classList.add('correct'); 
+                    else if (i === selectedVal) label.classList.add('wrong'); 
                 });
-
                 if (selectedVal === question.correctIndex) correctCount++;
             });
-
-            // حساب النتيجة
             const percentage = (correctCount / totalQuestions) * 100;
             let message = "";
-            let userStr = localStorage.getItem('bakaloria_user');
-            let userName = userStr ? JSON.parse(userStr).username : "الطالب";
-
-            if (percentage === 100) message = `ممتاز يا ${userName}! لقد حصلت على الدرجة النهائية 🌟`;
-            else if (percentage > (2/3)*100) message = `جيد جداً يا ${userName}! استمر في التقدم 👏`;
-            else if (percentage > (1/2)*100) message = `جيد يا ${userName}، يمكنك تحسين مستواك 💪`;
-            else message = `أعد المحاولة يا ${userName}، أنت تستطيع فعلها! 📚`;
+            let userName = currentUser ? currentUser.username : "الطالب";
+            if (percentage === 100) message = `ممتاز يا ${userName}! 🌟`;
+            else if (percentage > (2/3)*100) message = `جيد جداً يا ${userName}! 👏`;
+            else if (percentage > (1/2)*100) message = `جيد يا ${userName} 💪`;
+            else message = `أعد المحاولة يا ${userName}! 📚`;
 
             const resultBox = document.getElementById('quizResult');
-            resultBox.innerHTML = `
-                <h2>${correctCount} / ${totalQuestions}</h2>
-                <p>${message}</p>
-                <p style="font-size:15px; color:var(--muted); margin-top:10px;">تمت الإجابة على ${totalQuestions} سؤال.</p>
-            `;
+            resultBox.innerHTML = `<h2>${correctCount} / ${totalQuestions}</h2><p>${message}</p>`;
             resultBox.classList.remove('hidden');
             document.getElementById('submitQuizBtn').style.display = 'none';
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        });
-
-        // ----- إضافة امتحان (للمدير) -----
-        document.getElementById('createExamBtn').addEventListener('click', () => {
-            const sub = document.getElementById('examSubject').value;
-            const title = document.getElementById('examTitle').value.trim();
-            if (!sub || !title) return alert("اختر المادة واكتب العنوان");
             
-            tempQuestions = [];
-            document.getElementById('addQuestionsArea').classList.remove('hidden');
-            document.getElementById('adminMsg').textContent = `جاري إضافة أسئلة لامتحان: ${title}`;
+            // حفظ النتيجة في قاعدة البيانات لو المستخدم مسجل
+            if (currentUser) {
+                await addDoc(resultsRef, {
+                    userId: currentUser.id,
+                    username: currentUser.username,
+                    examTitle: examData.title,
+                    score: correctCount,
+                    total: totalQuestions,
+                    date: new Date().toLocaleDateString('ar-EG'),
+                    timestamp: Date.now()
+                });
+            }
         });
 
-        document.getElementById('addQuestionBtn').addEventListener('click', () => {
-            const qText = document.getElementById('qText').value.trim();
-            const opt1 = document.getElementById('opt1').value.trim();
-            const opt2 = document.getElementById('opt2').value.trim();
-            const opt3 = document.getElementById('opt3').value.trim();
-            const opt4 = document.getElementById('opt4').value.trim();
-            const correct = document.getElementById('correctAnswer').value;
+        window.showStats = async function() {
+            const container = document.getElementById('statsContainer');
+            if (!currentUser) {
+                container.innerHTML = '<p style="text-align:center; color:#666; padding:30px;">يجب تسجيل الدخول لعرض النتائج.</p>';
+                return showPage('stats');
+            }
 
-            if (!qText || !opt1 || !opt2 || correct === "") return alert("أكمل السؤال والاختيارين الأول والثاني والإجابة الصحيحة");
-
-            const options = [opt1, opt2];
-            if (opt3) options.push(opt3);
-            if (opt4) options.push(opt4);
-
-            tempQuestions.push({
-                text: qText,
-                options: options,
-                correctIndex: parseInt(correct)
-            });
-
-            // تفريغ الحقول
-            document.getElementById('qText').value = '';
-            document.getElementById('opt1').value = '';
-            document.getElementById('opt2').value = '';
-            document.getElementById('opt3').value = '';
-            document.getElementById('opt4').value = '';
-            document.getElementById('correctAnswer').value = '';
-            
-            document.getElementById('adminMsg').textContent = `تمت إضافة ${tempQuestions.length} سؤال.`;
-        });
-
-        document.getElementById('finishExamBtn').addEventListener('click', async () => {
-            if (tempQuestions.length === 0) return alert("لم تقم بإضافة أسئلة!");
-            const sub = document.getElementById('examSubject').value;
-            const title = document.getElementById('examTitle').value.trim();
+            container.innerHTML = '<p style="text-align:center; color:#666; padding:30px;">⏳ جاري تحميل نتائجك...</p>';
+            showPage('stats');
 
             try {
-                await addDoc(examsRef, {
-                    subject: sub,
-                    title: title,
-                    questions: tempQuestions,
-                    createdAt: Date.now()
-                });
-                alert("✅ تم حفظ الامتحان ونشره بنجاح!");
-                document.getElementById('examTitle').value = '';
-                document.getElementById('addQuestionsArea').classList.add('hidden');
-                tempQuestions = [];
-                document.getElementById('adminMsg').textContent = '';
-            } catch(e) { alert("خطأ: " + e.message); }
-        });
+                const q = query(resultsRef, where("userId", "==", currentUser.id));
+                const snap = await getDocs(q);
+                
+                if (snap.empty) {
+                    container.innerHTML = '<p style="text-align:center; color:#666; padding:30px;">لم تحل أي امتحانات حتى الآن.</p>';
+                } else {
+                    const results = [];
+                    snap.forEach(d => results.push(d.data()));
+                    results.sort((a,b) => b.timestamp - a.timestamp);
+
+                    container.innerHTML = results.map(item => {
+                        const percentage = (item.score / item.total) * 100;
+                        const scoreClass = percentage >= 50 ? '' : 'bad';
+                        return `<div class="stats-card"><div><h3>${item.examTitle}</h3><p style="font-size:12px; color:#666; margin-top:5px;">${item.date}</p></div><div class="score ${scoreClass}">${item.score} / ${item.total}</div></div>`;
+                    }).join('');
+                }
+            } catch(e) {
+                container.innerHTML = '<p style="color:red; text-align:center;">حدث خطأ في تحميل النتائج.</p>';
+            }
+        };
     </script>
 </body>
 </html>
