@@ -6,50 +6,59 @@
 <title>اختبر نفسك | منصة البكالوريا</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+    :root {
+        --bg: #f8fafc; --text: #0f172a; --card: #ffffff; --accent: #4f46e5;
+        --border: #e2e8f0; --danger: #ef4444; --success: #10b981; --muted: #64748b;
+    }
+    body.dark {
+        --bg: #0b1120; --text: #f8fafc; --card: #1e293b; --accent: #1e1e2d;
+        --border: #334155; --muted: #94a3b8; 
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-    body { background: #f8fafc; color: #0f172a; min-height: 100vh; }
+    body { background: var(--bg); color: var(--text); transition: background 0.4s, color 0.4s; min-height: 100vh; }
     .container { max-width: 900px; margin: 25px auto; padding: 0 15px; }
     
     /* لوحة التحكم */
-    .admin-panel { background: #fff; border: 2px solid #4f46e5; border-radius: 15px; padding: 20px; margin-bottom: 25px; }
-    .admin-panel h2 { font-size: 18px; color: #4f46e5; margin-bottom: 10px; }
-    input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo', sans-serif; }
+    .admin-panel { background: var(--card); border: 2px solid var(--accent); border-radius: 15px; padding: 20px; margin-bottom: 25px; }
+    .admin-panel h2 { font-size: 18px; color: var(--accent); margin-bottom: 10px; }
+    input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); outline: none; }
     textarea { min-height: 120px; font-family: monospace; }
-    button { cursor: pointer; border: none; border-radius: 8px; padding: 10px 15px; font-weight: bold; font-family: 'Cairo', sans-serif; }
-    .btn-primary { background: #4f46e5; color: #fff; width: 100%; padding: 15px; font-size: 16px; }
-    .btn-danger { background: #ef4444; color: #fff; }
+    button { cursor: pointer; border: none; border-radius: 8px; padding: 10px 15px; font-weight: bold; font-family: 'Cairo', sans-serif; transition: 0.2s; }
+    .btn-primary { background: var(--accent); color: #fff; width: 100%; padding: 15px; font-size: 16px; }
+    .btn-danger { background: var(--danger); color: #fff; }
     .btn-edit { background: #f59e0b; color: #fff; }
-    .btn-success { background: #10b981; color: #fff; width: 100%; padding: 15px; font-size: 16px; margin-top: 10px; }
+    .btn-success { background: var(--success); color: #fff; width: 100%; padding: 15px; font-size: 16px; margin-top: 10px; }
     .hidden { display: none !important; }
 
     /* الكروت */
     .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-    .card { background: #fff; border: 2px solid #ddd; border-radius: 12px; padding: 20px; cursor: pointer; text-align: center; transition: 0.2s; }
-    .card:hover { border-color: #4f46e5; transform: translateY(-3px); }
-    .card h3 { font-size: 18px; color: #0f172a; }
-    .card p { font-size: 13px; color: #666; margin-top: 5px; }
+    .card { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; text-align: center; transition: 0.2s; }
+    .card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+    .card h3 { font-size: 18px; color: var(--text); }
+    .card p { font-size: 13px; color: var(--muted); margin-top: 5px; }
 
     /* الأسئلة */
-    .question-box { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+    .question-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 15px; }
     .question-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; }
-    .option-label { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
-    .option-label:hover { background: #f0f0ff; }
-    .option-label input { width: 18px; height: 18px; margin: 0; }
+    .option-label { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
+    .option-label:hover { background: rgba(79,70,229,0.05); }
+    .option-label input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
     
-    .option-label.correct { background: #d1fae5; border-color: #10b981; font-weight: bold; }
-    .option-label.wrong { background: #fee2e2; border-color: #ef4444; font-weight: bold; }
-    .option-label.disabled { pointer-events: none; }
+    .option-label.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+    .option-label.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); font-weight: bold; }
+    .option-label.disabled { pointer-events: none; opacity: 0.8; }
     
-    .result-box { background: #fff; border: 2px solid #4f46e5; border-radius: 15px; padding: 30px; text-align: center; margin-top: 20px; }
-    .result-box h2 { font-size: 30px; color: #4f46e5; }
+    .result-box { background: var(--card); border: 2px solid var(--accent); border-radius: 15px; padding: 30px; text-align: center; margin-top: 20px; }
+    .result-box h2 { font-size: 30px; color: var(--accent); }
     .result-box p { font-size: 20px; font-weight: bold; margin-top: 10px; }
     
-    .back-btn { background: #ddd; color: #0f172a; padding: 8px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
+    .back-btn { background: var(--border); color: var(--text); padding: 8px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
     
-    .stats-card { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .stats-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
     .stats-card h3 { font-size: 16px; }
-    .stats-card .score { font-size: 20px; font-weight: bold; color: #10b981; }
-    .stats-card .score.bad { color: #ef4444; }
+    .stats-card .score { font-size: 20px; font-weight: bold; color: var(--success); }
+    .stats-card .score.bad { color: var(--danger); }
 </style>
 </head>
 <body>
