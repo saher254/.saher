@@ -123,13 +123,13 @@
     <header class="main-header" id="mainHeader">
         <h1 onclick="showPage('home')">🎓 منصة البكالوريا</h1>
         <div class="header-actions">
-            <button id="searchToggle" onclick="showPage('search')" title="بحث">🔍</button>
+            <button id="searchToggle" onclick="toggleSearch()" title="بحث">🔍</button
             <button id="themeToggle" title="تغيير المظهر">
                 <span class="icon">🌙</span>
             </button>
         </div>
     </header>
-
+  
     <div id="userBar">
         <div class="user-info">
             <span id="welcomeText">👋 أهلاً بك</span>
@@ -137,7 +137,7 @@
         </div>
         <button class="logout-btn" onclick="confirmLogout()">🚪 تسجيل الخروج</button>
     </div>
-
+<button id="searchToggle" onclick="toggleSearch()" title="بحث">🔍</button
     <div id="adminBar" style="display:none;">
         <div class="admin-stats">
             <span class="visitor-count">👁️ زوار المنصة: <span id="visitsCount">0</span></span>
@@ -439,6 +439,15 @@
             
             window.scrollTo(0, 0);
         };
+                // 🌟 دالة فتح وقفل البحث
+window.toggleSearch = function() {
+    const searchPage = document.getElementById('page-search');
+    if (searchPage.classList.contains('active')) {
+        showPage('home'); // لو إحنا في البحث، نرجع للرئيسية
+    } else {
+        showPage('search'); // لو في أي مكان تاني، نروح للبحث
+    }
+};
 
         window.openEmbedded = function(fileName, title) {
             clickSound.play().catch(e => console.log("الصوت اتمنع"));
