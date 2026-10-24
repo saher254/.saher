@@ -150,6 +150,11 @@
         const examsRef = collection(db, "exams");
         const resultsRef = collection(db, "exam_results");
 
+        // 🌟 تطبيق الثيم (الوضع الليلي/النهاري) بناءً على المنصة الأساسية
+        if (localStorage.getItem('bakaloria_theme') === 'dark') {
+            document.body.classList.add('dark');
+        }
+
         // فحص هل المستخدم مدير ولا طالب
         let currentUser = JSON.parse(localStorage.getItem('bakaloria_user'));
         let isAdmin = currentUser && currentUser.role === 'admin';
@@ -201,7 +206,7 @@
                 } else {
                     previewDiv.innerHTML = `<p style="color:green; font-weight:bold; margin-bottom:10px;">✅ تم التعرف على ${parsedQuestionsData.length} سؤال:</p>`;
                     parsedQuestionsData.forEach((q, i) => {
-                        previewDiv.innerHTML += `<div style="background:#f8f8f8; padding:10px; border-radius:8px; margin-bottom:5px;"><b>${i+1}. ${q.text}</b><br><span>${q.options.join(' | ')}</span><br><span style="color:green;">الإجابة: ${q.options[q.correctIndex]}</span></div>`;
+                        previewDiv.innerHTML += `<div style="background:rgba(0,0,0,0.02); padding:10px; border-radius:8px; margin-bottom:5px; border:1px solid var(--border);"><b>${i+1}. ${q.text}</b><br><span>${q.options.join(' | ')}</span><br><span style="color:green;">الإجابة: ${q.options[q.correctIndex]}</span></div>`;
                     });
                     document.getElementById('saveExamBtn').classList.remove('hidden');
                 }
@@ -218,13 +223,9 @@
 
             try {
                 if (editingId) {
-                    // تعديل امتحان موجود
-                    await updateDoc(doc(db, "exams", editingId), {
-                        subject: sub, title: title, questions: parsedQuestionsData
-                    });
+                    await updateDoc(doc(db, "exams", editingId), { subject: sub, title: title, questions: parsedQuestionsData });
                     alert("✅ تم تعديل الامتحان بنجاح!");
                 } else {
-                    // إضافة امتحان جديد
                     await addDoc(examsRef, { subject: sub, title: title, questions: parsedQuestionsData, createdAt: Date.now() });
                     alert("✅ تم حفظ الامتحان!");
                 }
@@ -232,7 +233,6 @@
             } catch(e) { alert("خطأ: " + e.message); }
         });
 
-        // إلغاء وضع التعديل
         document.getElementById('cancelEditBtn').addEventListener('click', resetAdminForm);
 
         function resetAdminForm() {
@@ -256,7 +256,7 @@
                 const q = query(examsRef, where("subject", "==", subject));
                 const snap = await getDocs(q);
                 if (snap.empty) {
-                    examsGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#666;">لا توجد امتحانات.</p>';
+                    examsGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--muted);">لا توجد امتحانات.</p>';
                 } else {
                     examsGrid.innerHTML = '';
                     snap.forEach(d => {
@@ -266,7 +266,6 @@
                         card.innerHTML = `<h3>${exam.title}</h3><p>${exam.questions.length} أسئلة</p>`;
                         card.onclick = () => startQuiz(d.id, exam);
                         
-                        // الأزرار دي بتظهر للمدير بس
                         if (isAdmin) {
                             const actionDiv = document.createElement('div');
                             actionDiv.style.marginTop = '10px';
@@ -274,16 +273,11 @@
                             actionDiv.style.gap = '5px';
                             actionDiv.style.justifyContent = 'center';
 
-                            // زرار التعديل
                             const editBtn = document.createElement('button');
                             editBtn.className = 'btn-edit';
                             editBtn.textContent = '✏️ تعديل';
-                            editBtn.onclick = (e) => {
-                                e.stopPropagation();
-                                enterEditMode(d.id, exam);
-                            };
+                            editBtn.onclick = (e) => { e.stopPropagation(); enterEditMode(d.id, exam); };
 
-                            // زرار الحذف
                             const delBtn = document.createElement('button');
                             delBtn.className = 'btn-danger';
                             delBtn.textContent = '🗑️ حذف';
@@ -306,32 +300,24 @@
             } catch(e) { alert("خطأ: " + e.message); }
         };
 
-        // تفعيل وضع التعديل
         function enterEditMode(id, exam) {
             document.getElementById('editingExamId').value = id;
             document.getElementById('adminPanelTitle').textContent = '✏️ تعديل الامتحان: ' + exam.title;
             document.getElementById('examSubject').value = exam.subject;
             document.getElementById('examTitle').value = exam.title;
             
-            // تحويل الأسئلة لنص عشان يتعدل
             let textStr = "";
             exam.questions.forEach(q => {
                 textStr += `السؤال: ${q.text}\n`;
                 const labels = ['أ', 'ب', 'ج', 'د'];
-                q.options.forEach((opt, i) => {
-                    textStr += `${labels[i]}) ${opt}\n`;
-                });
+                q.options.forEach((opt, i) => { textStr += `${labels[i]}) ${opt}\n`; });
                 textStr += `الإجابة: ${labels[q.correctIndex]}\n\n`;
             });
             document.getElementById('bulkText').value = textStr.trim();
-            
-            // تخزين الأسئلة المؤقتة في المصفوفة (عشان لو حفظ من غير تعديل في النص)
             parsedQuestionsData = exam.questions;
             
-            // إظهار زرار الإلغاء والحفظ
             document.getElementById('saveExamBtn').classList.remove('hidden');
             document.getElementById('cancelEditBtn').classList.remove('hidden');
-            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -383,7 +369,6 @@
             document.getElementById('submitQuizBtn').style.display = 'none';
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             
-            // حفظ النتيجة في قاعدة البيانات لو المستخدم مسجل
             if (currentUser) {
                 await addDoc(resultsRef, {
                     userId: currentUser.id,
@@ -400,11 +385,11 @@
         window.showStats = async function() {
             const container = document.getElementById('statsContainer');
             if (!currentUser) {
-                container.innerHTML = '<p style="text-align:center; color:#666; padding:30px;">يجب تسجيل الدخول لعرض النتائج.</p>';
+                container.innerHTML = '<p style="text-align:center; color:var(--muted); padding:30px;">يجب تسجيل الدخول لعرض النتائج.</p>';
                 return showPage('stats');
             }
 
-            container.innerHTML = '<p style="text-align:center; color:#666; padding:30px;">⏳ جاري تحميل نتائجك...</p>';
+            container.innerHTML = '<p style="text-align:center; color:var(--muted); padding:30px;">⏳ جاري تحميل نتائجك...</p>';
             showPage('stats');
 
             try {
@@ -412,7 +397,7 @@
                 const snap = await getDocs(q);
                 
                 if (snap.empty) {
-                    container.innerHTML = '<p style="text-align:center; color:#666; padding:30px;">لم تحل أي امتحانات حتى الآن.</p>';
+                    container.innerHTML = '<p style="text-align:center; color:var(--muted); padding:30px;">لم تحل أي امتحانات حتى الآن.</p>';
                 } else {
                     const results = [];
                     snap.forEach(d => results.push(d.data()));
@@ -421,7 +406,7 @@
                     container.innerHTML = results.map(item => {
                         const percentage = (item.score / item.total) * 100;
                         const scoreClass = percentage >= 50 ? '' : 'bad';
-                        return `<div class="stats-card"><div><h3>${item.examTitle}</h3><p style="font-size:12px; color:#666; margin-top:5px;">${item.date}</p></div><div class="score ${scoreClass}">${item.score} / ${item.total}</div></div>`;
+                        return `<div class="stats-card"><div><h3>${item.examTitle}</h3><p style="font-size:12px; color:var(--muted); margin-top:5px;">${item.date}</p></div><div class="score ${scoreClass}">${item.score} / ${item.total}</div></div>`;
                     }).join('');
                 }
             } catch(e) {
